@@ -2,6 +2,21 @@
 
 ## GDB
 
+| 示例                                    | 功能                                                   |
+| ------------                            | ------------                                           |
+| show dir                                | 查看当前gdb搜索源码的路径                              |
+| dir dirname                             | 添加新的源码路径到搜索路径，多个时用冒号分开           |
+| display                                 | 自动打印调试信息                                       |
+| undisplay                               | 取消自动打印调试信息                                   |
+| tb                                      | 临时断点                                               |
+| x/nfu addr                              | 打印内存块，n: 单元数量，f: 输出格式(bodx, 2-8-10-16进制)，u: 单元长度(bhwg, 1-2-4-8字节) |
+| attach PID                              | 附上PID进程并进入调试                                  |
+| set substitute-path from\_path to\_path | 映射源码搜索路径中的部分string为其他string             |
+| set scheduler-locking off               | 执行所有thread                                         |
+| set scheduler-locking on                | 只执行当前thread                                       |
+| set scheduler-locking step              | 单步时，除了next过一个函数的情况以外，只执行当前thread |
+
+
 ## PDB
 
 查看代码 l 查看当前位置前后11行代码，符号-->标示当前位置

@@ -7,7 +7,7 @@
 | sh -x run.sh   | 进入跟踪方式，显示所执行的每一条命令 |
 | sh -c "string" | 从strings中读取命令                  |
 
-## 字符串替换
+## 字符串操作
 | 示例                             | 功能                                                                          |
 | ------------                     | ------------                                                                  |
 | ${#string}                       | 获取$string的长度                                                             |
@@ -45,28 +45,18 @@
 | sort -t \_ -k2n -k3n -s             | 以"\_"为分隔符，先第2列进行数值排序，后第3列进行稳定的数值排序                |
 | sort -t \_ -k2n | sort -t . -k1,1 -s | 先以"\_"为分隔符，第2列进行数值排序，后以"."为分隔符，第1列进行稳定的排序    |
 
-## gdb调试
-| 示例                                    | 功能                                                   |
-| ------------                            | ------------                                           |
-| show dir                                | 查看当前gdb搜索源码的路径                              |
-| dir dirname                             | 添加新的源码路径到搜索路径，多个时用冒号分开           |
-| display                                 | 自动打印调试信息                                       |
-| undisplay                               | 取消自动打印调试信息                                   |
-| tb                                      | 临时断点                                               |
-| x/nfu addr                              | 打印内存块，n: 单元数量，f: 输出格式(bodx, 2-8-10-16进制)，u: 单元长度(bhwg, 1-2-4-8字节) |
-| attach PID                              | 附上PID进程并进入调试                                  |
-| set substitute-path from\_path to\_path | 映射源码搜索路径中的部分string为其他string             |
-| set scheduler-locking off               | 执行所有thread                                         |
-| set scheduler-locking on                | 只执行当前thread                                       |
-| set scheduler-locking step              | 单步时，除了next过一个函数的情况以外，只执行当前thread |
+## tr
+tr -d '\n\r' 删除字符串中的换行符
 
 ## 压缩
-| 示例                                      | 功能                                 |
-| ------------                              | ------------                         |
-| tar -c[zj]vf archive.tar.gz bin/ lib/     | 创建归档，将bin和lib目录归档到压缩包 |
-| tar -x[zj]vf archive.tar.gz -C DIR        | 解压归档，将压缩包解压到DIR目录      |
-| tar -t[zj]vf archive.tar.gz               | 查看归档，查看压缩包内文件列表       |
-| zip archive.zip -r ffmpeg/ pooltrans-1.0/ | 创建归档                             |
+| 示例                                                         | 功能                                 |
+| ------------                                                 | ------------                         |
+| tar -c[zj]vf archive.tar.gz bin/ lib/                        | 创建归档，将bin和lib目录归档到压缩包 |
+| tar -x[zj]vf archive.tar.gz -C DIR                           | 解压归档，将压缩包解压到DIR目录      |
+| tar -t[zj]vf archive.tar.gz                                  | 查看归档，查看压缩包内文件列表       |
+| zip archive.zip -r ffmpeg/ pooltrans-1.0/                    | 创建归档                             |
+| tar -cvf All.tar All/ \| split -b 4000M -d -a 1 - Split.tar. | 创建归档，并分割为每个4000M          |
+| cat Split.tar.\* \| tar -xv                                  | 解压分割后的压缩文件                 |
 
 ## ln链接
 | 示例                | 功能                     |
@@ -114,8 +104,14 @@
 | IFS=$'\n' |
 
 
-
 ## 其他常用命令
+
+修改HOME目录：
+```
+usermod -d NEWHOME -u uid USERNAME
+```
+
+排序并删除重复行
 ```
 sort | uniq
 /usr/bin/time -f "pencent %P real %e cpu %S %U men %M %K" ffmpeg
@@ -139,4 +135,26 @@ export no_proxy="mirrors.xxx.com
 unset http_proxy
 unset https_proxy
 unset no_proxy
+```
+
+并行处理
+```
+proc=10     # parallel number
+mkfifo ./fifo && exec 3<> ./fifo && rm -rf ./fifo
+for ((i=0; i<$proc; i++))
+do
+  echo >&3
+done
+
+for f in `ls *.dng`
+do
+  read -u 3
+
+  {
+    # do things
+    echo >&3
+  }&
+done
+
+wait
 ```
