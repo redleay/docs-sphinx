@@ -125,6 +125,13 @@ git reset --soft COMMITID       # 新增内容处于已添加到暂存区状态
 git reset --mixed COMMITID      # 新增内容处于未添加到暂存区状态
 ```
 
+## 重写历史
+
+修改第1次commit
+```
+git rebase -i --root
+```
+
 修改最新commit的信息
 ```
 git commit --amend
@@ -137,7 +144,14 @@ git commit --amend --author="NEWAUTHOR <NEWEMAIL@address.com>"
 
 批量修改commit的作者信息
 ```
-git filter-branch --env-filter 'export GIT\_AUTHOR\_EMAIL=new\_author\_email' --
+git filter-branch --commit-filter '
+    if [ "$GIT_AUTHOR_NAME" = "old name" ];
+    then
+            GIT_AUTHOR_NAME="new name";
+            git commit-tree "$@";
+    else
+            git commit-tree "$@";
+    fi' HEAD
 ```
 
 ## 对比
@@ -237,6 +251,21 @@ git submodule update
 初始化(克隆)并更新子模块
 ```
 git submodule update --init --recursive
+```
+
+## subtree
+将仓库old-repo中关于目录elake的commit抽出为新的分支new-branch
+```
+cd old-repo
+git subtree split -P elake -b new-branch
+```
+
+新建仓库new-repo，并从old-repo的分支new-branch中拉取内容
+```
+mkdir new-repo
+cd new-repo
+git init
+git pull ../old-repo new-branch
 ```
 
 ## 远程地址
