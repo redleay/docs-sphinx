@@ -6,16 +6,16 @@
    :titlesonly:
    :glob:
 
-   fine-article
-   git-cmd
+   transcoding-cmd
+   multimedia-knowledge
    HDR-article
    AI-learning-note
-   multimedia-knowledge
-   debug-skill
+   git-cmd
    shell-cmd-script
    python-env-setting
-   tool-compiling
-   transcoding-cmd
+   debug-skill
    vim-skill
+   tool-compiling
+   fine-article
    write-blog
 
