@@ -8,6 +8,7 @@
 
    transcoding-cmd
    multimedia-knowledge
+   digital-image-processing
    HDR-article
    AI-learning-note
    git-cmd
