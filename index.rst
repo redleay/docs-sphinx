@@ -12,10 +12,10 @@ Welcome to redleay's documentation!
    :caption: Contents:
    :glob:
 
-   source/tech/index.rst
-   source/read/index.rst
+   source/技术笔记/index.rst
+   source/阅读笔记/index.rst
    source/人文素养/index.rst
-   source/think/index.rst
+   source/思考随笔/index.rst
 
 Indices and tables
 ==================
