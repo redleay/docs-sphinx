@@ -6,19 +6,8 @@
    :titlesonly:
    :glob:
 
-   多媒体/转码技巧.md
-   多媒体/色彩表示.md
-   多媒体/图像处理.md
-   多媒体/HDR.md
-   多媒体/封装格式.md
-   多媒体/工具编译.md
-   AI/基础概念.md
-   AI/重要网络.md
-   编程/Vim常用技巧.md
-   编程/Git常用技巧.md
-   编程/LinuxShell语法.md
-   编程/C语言调试技巧.md
-   编程/Python语法.md
+   多媒体/index.rst
+   AI/index.rst
+   编程/index.rst
+   其他/index.rst
    fine-article
-   其他/搭建博客.md
-   其他/电子书.md
