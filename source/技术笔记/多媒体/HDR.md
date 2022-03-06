@@ -38,7 +38,7 @@
 
 [色温、白平衡与色彩恒常性](https://zhuanlan.zhihu.com/p/27165715)
 
-![色彩感知示意图](../../figures/color-perceive-procedure.jpg)
+![色彩感知示意图](../../../figures/color-perceive-procedure.jpg)
 
 ## 色彩表示
 
