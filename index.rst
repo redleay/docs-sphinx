@@ -14,6 +14,7 @@ Welcome to redleay's documentation!
 
    source/tech/index.rst
    source/read/index.rst
+   source/knowledge/index.rst
    source/think/index.rst
 
 Indices and tables

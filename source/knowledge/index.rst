@@ -1,4 +1,4 @@
-思考杂想
+生活常识
 ==========================================
 
 .. toctree::
@@ -6,4 +6,4 @@
    :titlesonly:
    :glob:
 
-   universe-and-life
+   literal-difference
