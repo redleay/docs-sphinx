@@ -14,7 +14,7 @@ Welcome to redleay's documentation!
 
    source/tech/index.rst
    source/read/index.rst
-   source/knowledge/index.rst
+   source/人文素养/index.rst
    source/think/index.rst
 
 Indices and tables
