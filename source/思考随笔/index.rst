@@ -6,4 +6,4 @@
    :titlesonly:
    :glob:
 
-   universe-and-life
+   宇宙与人生
