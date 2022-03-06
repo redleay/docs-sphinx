@@ -16,6 +16,12 @@
 | set scheduler-locking on                | 只执行当前thread                                       |
 | set scheduler-locking step              | 单步时，除了next过一个函数的情况以外，只执行当前thread |
 
+gdb调试时输出下面信息：
+```
+Program received signal SIGTRAP, Trace/breakpoint trap
+```
+原因是编译时和调试时的动态库版本不匹配，编译时使用了devtoolset-7中的gcc-7.3.1，但调试时LD_LIBRARY_PATH没有添加devtoolset-7动态库路径，gdb仍然使用系统默认的gcc-4.8.5动态库，在LD_LIBRARY_PATH添加devtoolset-7动态库路径即可解决
+
 
 ## PDB
 

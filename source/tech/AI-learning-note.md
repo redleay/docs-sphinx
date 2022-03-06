@@ -40,6 +40,18 @@ JS散度：
 
 激活函数
 
+### 网络结构
+
+假设CNN网络中某一层的输入数据维度为$ic \times ih \times iw$，输出数据维度为$oc \times oh \times ow$，则CNN的卷积核维度为$oc \times ic \times kh \times kw$，其中，
+
+- $ic$是输入的通道数，如，RGB图像的通道为3
+- $iw$和$ih$是输入的宽高
+- $oc$是输出的通道数
+- $ow$和$oh$是输出数据中每个通道的尺寸，可代表输出空间内容，或其他无具体物理意义的特征
+- $kw$和$kh$是卷积核的尺寸
+- $oc$决定有多少个不同的卷积核，每个卷积核的维度为$ic \times kw \times kh$，即卷积核需要跨越输入数据的所有通道
+- 卷积核即为神经元
+- $iw$和$kw$以及pading的大小决定$ow$，若$kw$为奇数，计算公式为$ow = iw + 2 * pad - (kw - 1)$，$oh$同理
 
 ### 训练迭代过程
 深度学习中最基本的思想为梯度下降，反向传播减小误差优化参数。
@@ -50,13 +62,17 @@ JS散度：
 3. Mini-Batch Gradient Decent（小批量梯度下降）：这种方式介于上面两种方法之间，一次迭代使用小批量的数据，既能够防止一次迭代仅有1个样本带来的收敛性较差的问题，同时，每次迭代只是用了小批量样本，不会像Batch gradient descent那样单次迭代耗时过长。
 
 训练的数量概念：
-1. iteration：1个iteration是指一次迭代过程，即完成一次前向和反向的整个过程
-2. batchsize：一个迭代批次样本数量的大小，即每次迭代使用的样本数量
+1. batchsize：一个迭代批次样本数量的大小，即每次迭代使用的样本数量
+2. iteration：1个iteration是指一次迭代过程，即完成一次前向和反向的整个过程
 3. epoch：1个epoch是指训练集中的全部样本都训练了一次，训练集中所有的样本都被迭代了一次就是完成了一个epoch，通常将的几个epoch就是指训练集中的所有样本被迭代了几次
 
 参数优化的幅度调整：
-1. Optimizer：根据梯度更新模型，有梯度下降法（GD, BGD, SGD）、动量优化法（Momentum, NAG）、自应用学习率优化法（AdaGrad, RMSProp, AdaDelta, Adam）三大类算法。这篇文章[《各种优化器Optimizer的总结与比较》](https://blog.csdn.net/weixin_40170902/article/details/80092628)详细对比了各种优化器的原理和特点。
+1. Optimizer：根据梯度更新模型参数，有梯度下降法（GD, BGD, SGD）、动量优化法（Momentum, NAG）、自应用学习率优化法（AdaGrad, RMSProp, AdaDelta, Adam）三大类算法。这篇文章[《各种优化器Optimizer的总结与比较》](https://blog.csdn.net/weixin_40170902/article/details/80092628)详细对比了各种优化器的原理和特点。
 2. Scheduler：调整学习率
+
+Optimizer/Scheduler与iteration/epoch的关系：
+1. Optimizer一般以iteration为单位更新模型参数，训练过程中每增加一次iteration，根据反向传播和梯度下降法更新模型的参数
+2. Scheduler一般以epoch为单位调整学习率，训练过程中每增加一个或多个epoch，学习率逐渐变小
 
 
 PCA主成分分析

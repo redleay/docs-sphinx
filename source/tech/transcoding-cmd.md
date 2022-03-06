@@ -42,10 +42,16 @@ ffmpeg -i test.tif -lavfi "[0:0]sdr2hdr[hdr];[hdr]scale[rgb]" -an -v debug -map 
 ffmpeg -i test.tif -i ref.tif -lavfi "[0:0]scale[yuv0];[yuv0]split[tst0][tst1];[1:0]scale[ref];[ref]split[ref0][ref1];[tst0][ref0]psnr=f=psnr.log;[tst1][ref1]ssim=f=ssim.log" -f null - > metric.log 2>&1
 ```
 
-提取信息
+FFmpeg读入不连续编号的图像文件
+```
+ffmpeg -pattern_type glob -i '*.png' -c:v libx264 output.mp4
+```
+
+探测信息
 ```
 mediainfo --Inform="Video;%Width%,%Height%,%FrameRate%,%BitRate%,%Duration%,%FrameCount%" input.mp4
 mediainfo --Inform="Video;%colour_primaries%,%transfer_characteristics%,%matrix_coefficients%" input.mp4
+magick identify -verbose input.tif
 magick identify -format "%wx%h %[colorspace] %[profile:icc]" input.tif
 ffprobe -show_streams input.mp4
 ```
@@ -110,8 +116,9 @@ ffmpeg -i test.mp4 -map 0:0 -c:a copy -vn out.ec3
 
 视频抽帧
 ```
-ffmpeg -i input.mp4 -vframes 10 -q:v 2 output_%03d.jpg  # better quality with smaller q, which locate in [1, 31]
-ffmpeg -i input.mp4 -vf "select=eq(n\,34)+eq(n\,80)" image_%d.jpg  # number start from 0
+ffmpeg -i input.mp4 -vframes 10 -q:v 2 output_%03d.jpg              # better quality with smaller q, which locate in [1, 31]
+ffmpeg -i input.mp4 -r 0.1 image_%d.jpg                             # 每隔10秒抽1帧
+ffmpeg -i input.mp4 -vf "select=eq(n\,34)+eq(n\,80)" image_%d.jpg   # 抽出第34和80帧, number start from 0
 ```
 
 图片格式转换
@@ -155,4 +162,9 @@ ffmpeg -i test.mp4 -i ref.mp4 -lavfi libvmaf="model_path=release/model/vmaf_v0.6
 HDR退化为SDR (编译时需要开启--enable-libzimg)
 ```
 ffmpeg -i HDR.mp4 -vf zscale=transfer=linear,tonemap=reinhard,zscale=transfer=bt709,format=yuv420p -c:v libx265 -x265-params crf=21 -movflags faststart SDR.reinhard.mp4
+```
+
+FFmpeg读入和转码yuv文件，需要设置yuv的宽高和格式信息
+```
+$FFMPEG/bin/set_vars.sh ffmpeg -s 1920x1080 -pix_fmt yuv420p -i input.yuv -c:v libx265 output.mp4
 ```

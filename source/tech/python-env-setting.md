@@ -12,6 +12,7 @@ List追加合并: `listC = listA + listB`
 List连接: `chain(bars_576p, bars_720p, bars_1080p)`
 
 ## Numpy
+List转numpy.array：`np.array(listA)`
 numpy.array转List: `listA = numpyarrayA.tolist()`
 
 numpy内置索引: `rgb[rgb < 0] = 0`
@@ -71,10 +72,10 @@ plt.savefig("Bitrate.png", bbox_inches='tight') # tight output
 
 pip设置镜像源和代理
 ```
+pip3 install tensorflow==1.10.0 -i https://mirrors.tencent.com/pypi/simple --trusted-host mirrors.tencent.com
 pip3 install tensorflow==1.10.0 -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
 pip3 install tensorflow==1.10.0 -i https://pypi.tuna.tsinghua.edu.cn/simple --proxy proxy.xxx.com
 ```
-
 ### Pypi国内镜像源
 
 [腾讯](https://mirrors.tencent.com/pypi/simple)
@@ -134,6 +135,21 @@ pkgs_dirs:
   - /data/miniconda3/pkgs
 ```
 
+conda安装应用报错：
+```
+Solving environment: failed with initial frozen solve. Retrying with flexible solve
+```
+解决办法：
+```
+$ conda -V # 查询conda版本
+$ conda update -n base conda # 升级conda
+conda update --all # 更新全部应用
+```
+
+## TensorBoard
+
+执行`tensorboard --logdir=LOG_PATH`，然后在浏览器中访问`http://localhost:6006/`便可以查看到图形
+
 ## 其他
 
 修改Linux系统语言编码，解决python获取Linux命令输出的中文字符乱码问题
@@ -154,3 +170,14 @@ export LC_ALL="en_US.utf8"
 >>> import torch.utils.cpp_extension
 >>> torch.utils.cpp_extension.CUDA_HOME
 ```
+
+使用torch.jit.script()将pth类型模型导出为pt类型时
+```
+serialized_model = torch.jit.script(netG)
+serialized_model.save('model.pt')
+```
+输出以下报错：
+```
+torch.jit.frontend.NotSupportedError: Compiled functions can't take variable number of arguments or use keyword-only arguments with defaults:
+```
+原因：jit不支持DataParallel，解决方法为不使用nn.DataParallel()，且将模型参数的key的module.前缀删除，可参考[这篇文章](https://szukevin.site/2021/02/27/MODNet%E8%BD%AC%E6%88%90torchscript%E5%BD%A2%E5%BC%8F%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/)

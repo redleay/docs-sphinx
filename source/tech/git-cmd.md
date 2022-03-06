@@ -95,6 +95,12 @@ git log
 git show COMMIT
 ```
 
+查看文件的特定版本内容
+```
+git show COMMIT:FILE
+```
+
+
 查看当前commit
 ```
 git rev-parse --short HEAD
@@ -153,6 +159,12 @@ git filter-branch --commit-filter '
             git commit-tree "$@";
     fi' HEAD
 ```
+
+修改历史时保留merge commit
+```
+git rebase --rebase-merges master
+```
+
 
 ## 对比
 
@@ -252,6 +264,10 @@ git submodule update
 ```
 git submodule update --init --recursive
 ```
+将submodule新的URL更新到文件.git/config
+```
+git submodule sync
+```
 
 ## subtree
 将仓库old-repo中关于目录elake的commit抽出为新的分支new-branch
@@ -271,7 +287,7 @@ git pull ../old-repo new-branch
 ## 远程地址
 添加关联的远程仓库URL
 ```
-git remote add new-origin URL
+git remote add origin URL
 ```
 修改关联的远程仓库URL
 ```
@@ -304,6 +320,7 @@ git config --global alias.co checkout
 git config --global alias.st status
 git config --global alias.ci commit
 git config --global alias.br branch
+git config --global alias.rs restore
 git config --global alias.df diff
 git config --global alias.dft difftool
 git config --global alias.dfs 'diff --staged'
@@ -325,6 +342,7 @@ co = checkout
 st = status
 ci = commit
 br = branch
+rs = restore
 df = diff
 dft = difftool
 dfs = diff --staged

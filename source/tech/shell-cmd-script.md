@@ -17,10 +17,12 @@
 | ${string##substring}             | 从变量$string的开头, 删除最长匹配$substring的子串                             |
 | ${string%substring}              | 从变量$string的结尾, 删除最短匹配$substring的子串                             |
 | ${string%%substring}             | 从变量$string的结尾, 删除最长匹配$substring的子串                             |
+| ${string%%[[:space:]]\*}         | 删除变量$string结尾的空格                                                     |
 | ${string/substring/replacement}  | 使用$replacement, 来代替第一个匹配的$substring                                |
 | ${string//substring/replacement} | 使用$replacement, 代替所有匹配的$substring                                    |
 | ${string/#substring/replacement} | 如果$string的前缀匹配$substring, 那么就用$replacement来代替匹配到的$substring |
 | ${string/%substring/replacement} | 如果$string的后缀匹配$substring, 那么就用$replacement来代替匹配到的$substring |
+
 
 ## sed
 | 示例                           | 功能                                    |
@@ -35,15 +37,19 @@
 | sed -i '/xxx/s/aaa/fff/g' file | 找出包含xxx的行，并将其中的aaa替换为fff |
 | sed -i '1s/[#\*]/fff/gp' file  | 对第1行，将其中的#号或是\*号替换为fff   |
 | sed -i '/^[ ]\*$/d' file       | 删除空行                                |
-| sed -i "s#inputXX#$v#" file    | 查找inputXX并替换为变量$v的内容         |
+| sed -i "s#inputXX#$v#" file    | 查找inputXX并替换为变量$v的内容，使用双引号 |
+| sed -i "s/[0-9]//" file        | 查找数字                                |
+| sed -i "s/\(XXX\)/\1,\1/" file | 匹配分组                                |
 
-## sort
+
+## 排序
 | 示例                                | 功能                                                                          |
 | ------------                        | ------------                                                                  |
 | sort -n                             | 以数值来排序                                                                  |
 | sort -t \_ -k 2 -n                  | 以"\_"为分隔符，以第2列进行数值排序                                           |
 | sort -t \_ -k2n -k3n -s             | 以"\_"为分隔符，先第2列进行数值排序，后第3列进行稳定的数值排序                |
-| sort -t \_ -k2n | sort -t . -k1,1 -s | 先以"\_"为分隔符，第2列进行数值排序，后以"."为分隔符，第1列进行稳定的排序    |
+| sort -t \_ -k2n | sort -t . -k1,1 -s|  先以"\_"为分隔符，第2列进行数值排序，后以"."为分隔符，第1列进行稳定的排序    |
+| shuf                                | 随机排序                                                                      |
 
 ## tr
 tr -d '\n\r' 删除字符串中的换行符
@@ -114,7 +120,15 @@ usermod -d NEWHOME -u uid USERNAME
 排序并删除重复行
 ```
 sort | uniq
-/usr/bin/time -f "pencent %P real %e cpu %S %U men %M %K" ffmpeg
+```
+
+设置terminal终端支持中文显示
+```
+LANG="zh_CN.UTF-8"
+```
+
+```
+time -f "pencent %P real %e cpu %S %U men %M %K" ffmpeg
 ```
 
 列出目录和文件的完整路径
@@ -157,4 +171,18 @@ do
 done
 
 wait
+```
+
+实时网速和流量情况
+```
+vnstat -i eth0 -l  # 查看实时流量
+iftop -i eth1
+nethogs -d 5 eth0  # 每5秒种刷新1次
+```
+
+升级gcc版本到7.x.x
+```
+sudo yum install centos-release-scl
+sudo yum install devtoolset-7-gcc devtoolset-7-gcc-c++  # devtoolset-7-gcc*
+scl enable devtoolset-7 bash        # shall execute for every terminai
 ```

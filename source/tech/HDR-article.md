@@ -34,6 +34,12 @@
 
 [HDR关键技术：HEVC/H.265编码优化 - 云+社区 - 腾讯云](https://cloud.tencent.com/developer/article/1180918)
 
+## 色彩形成
+
+[色温、白平衡与色彩恒常性](https://zhuanlan.zhihu.com/p/27165715)
+
+![色彩感知示意图](../../figures/color-perceive-procedure.jpg)
+
 ## 色彩表示
 
 人眼中有三种分别对L、M、S三种波长敏感的锥状细胞，由三种锥状细胞得到的三刺激值可构成LMS色彩空间，但直接使用LMS三刺激值得到的色度图很大一部分落在第二象限，原因是红色的刺激值存在负值。
