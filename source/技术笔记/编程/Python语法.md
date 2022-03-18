@@ -1,4 +1,4 @@
-# Python常用语法和环境配置
+# Python语法
 
 ## 数据类型处理
 List转Set: `set(listA)`

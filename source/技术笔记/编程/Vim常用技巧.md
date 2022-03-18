@@ -1,4 +1,4 @@
-# VIM使用技巧
+# Vim常用技巧
 
 ## quickfix窗口跳转
 

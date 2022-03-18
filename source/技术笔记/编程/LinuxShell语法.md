@@ -1,4 +1,4 @@
-# Linux命令与Shell脚本
+# LinuxShell语法
 
 ## Shell脚本执行选项
 | 示例           | 功能                                 |
