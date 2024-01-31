@@ -16,6 +16,7 @@ Welcome to redleay's documentation!
    source/阅读笔记/index.rst
    source/人文素养/index.rst
    source/思考随笔/index.rst
+   source/生活常识/index.rst
 
 Indices and tables
 ==================
