@@ -298,7 +298,21 @@ git remote set-url origin URL
 git remote rm origin
 ```
 
-## SSH keys配置
+## 统计
+
+统计特定开发者的commit数量
+```
+git log --author="vincenluo" --oneline | wc -l
+```
+统计特定开发者在某段时间内的提交代码数量
+```
+git log --author="vincenluo" --since=2022-12-01 --until=2023-12-04 --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc }' -
+```
+
+## 密钥配置
+
+### ssh访问
+
 生成密钥（一组公钥和私钥对）
 ```
 ssh-keygen -t rsa -C "EMAIL"
@@ -308,6 +322,13 @@ ssh-keygen -t rsa -C "EMAIL"
 ```
 ssh-agent bash
 ssh-add ~/.ssh/XXX_id_rsa
+```
+
+### https访问
+
+配置本地密钥缓存
+```
+git config --global credential.helper store
 ```
 
 ## 别名配置
@@ -355,3 +376,5 @@ last = log -1 HEAD
 rb = rebase -i
 cp = cherry-pick
 ```
+
+

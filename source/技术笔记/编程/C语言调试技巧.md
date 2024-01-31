@@ -1,6 +1,27 @@
 # C语言调试技巧
 
-## GDB
+## 查看已启动进程的stdout和stderr
+```
+strace -ewrite -p $PID 2>&1
+```
+
+## 重定向已启动进程的stdout和stderr
+
+```
+gdb -p $PID
+(gdb) p dup2(open("/dev/null", 0), 1)  # 1表示stdout，具体路径为/proc/$PID/fd/1
+(gdb) p dup2(open("/dev/null", 0), 2)  # 2表示stderr，具体路径为/proc/$PID/fd/2
+(gdb) detach
+(gdb) quit
+```
+
+## Valgrind
+
+```
+valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all $CMD
+```
+
+## GDB命令
 
 | 示例                                    | 功能                                                   |
 | ------------                            | ------------                                           |

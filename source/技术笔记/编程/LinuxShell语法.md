@@ -88,6 +88,7 @@ tr -d '\n\r' 删除字符串中的换行符
 | 示例                | 功能               |
 | ------------        | ------------       |
 | make VERBOSE=1      | 打印make执行的命令 |
+| make install PREFIX=/usr/local/test      | 指定make install的安装路径 |
 | readelf -S exe\|lib | 查询exe或lib是否存在\_debug开头的段，有则携带debug信息 |
 
 ## 语法
@@ -122,13 +123,18 @@ usermod -d NEWHOME -u uid USERNAME
 sort | uniq
 ```
 
+下载文件时中文文件名不转义
+```
+wget --restrict-file-names=nocontrol $URL
+```
+
 设置terminal终端支持中文显示
 ```
 LANG="zh_CN.UTF-8"
 ```
 
 ```
-time -f "pencent %P real %e cpu %S %U men %M %K" ffmpeg
+(time -f "pencent %P real %e cpu %S %U men %M %K" ffmpeg) > log.txt 2>&1
 ```
 
 列出目录和文件的完整路径
@@ -175,6 +181,8 @@ wait
 
 实时网速和流量情况
 ```
+sudo nload eth0 -m
+sudo nload -m
 vnstat -i eth0 -l  # 查看实时流量
 iftop -i eth1
 nethogs -d 5 eth0  # 每5秒种刷新1次
@@ -185,4 +193,15 @@ nethogs -d 5 eth0  # 每5秒种刷新1次
 sudo yum install centos-release-scl
 sudo yum install devtoolset-7-gcc devtoolset-7-gcc-c++  # devtoolset-7-gcc*
 scl enable devtoolset-7 bash        # shall execute for every terminai
+source /opt/rh/devtoolset-7/enable
+```
+
+查看进程stdout
+```
+strace -ewrite -p $PID
+```
+
+valgrind检测内存泄漏
+```
+valgrind --tool=memcheck --leak-check=full ./x265
 ```

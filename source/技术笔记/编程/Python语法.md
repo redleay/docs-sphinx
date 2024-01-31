@@ -15,9 +15,11 @@ List连接: `chain(bars_576p, bars_720p, bars_1080p)`
 List转numpy.array：`np.array(listA)`
 numpy.array转List: `listA = numpyarrayA.tolist()`
 
-numpy内置索引: `rgb[rgb < 0] = 0`
-
 numpy.array：可直接通过`+-*/`实现逐个元素的加减乘除运算
+
+内置索引和赋值: `rgb[rgb < 0] = 0`
+条件选择和处理：`a = np.where((b > 0) & (b < 3), 1, 7)`
+条件选择和处理：`a = np.select([(b > 0) & (b < 3), (b > 6) & (b < 8)], [1, 7])`
 
 ## 迭代式
 单List循环: `[v for v in values]`
@@ -181,3 +183,20 @@ serialized_model.save('model.pt')
 torch.jit.frontend.NotSupportedError: Compiled functions can't take variable number of arguments or use keyword-only arguments with defaults:
 ```
 原因：jit不支持DataParallel，解决方法为不使用nn.DataParallel()，且将模型参数的key的module.前缀删除，可参考[这篇文章](https://szukevin.site/2021/02/27/MODNet%E8%BD%AC%E6%88%90torchscript%E5%BD%A2%E5%BC%8F%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/)
+
+
+
+
+pytorch相关安装包下载地址
+```
+https://download.pytorch.org/whl/
+https://download.pytorch.org/whl/cu110/torch-1.7.0%2Bcu110-cp38-cp38-linux_x86_64.whl
+pip install torch-1.7.0+cu110-cp38-cp38-linux_x86_64.whl
+https://download.pytorch.org/whl/cu110/torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
+pip install torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
+```
+
+torchvision版本适配关系
+```
+https://pypi.org/project/torchvision/
+```
