@@ -18,10 +18,16 @@
 [HDR视频生态圈追踪 - netease_im的博客 - CSDN博客](https://blog.csdn.net/netease_im/article/details/86583136)  
 [为什么人的很多感觉都是对数的，例如视觉、听觉？ - 知乎](https://www.zhihu.com/question/24733163/answer/349614347)  
 [gammacorrection](http://www.13thmonkey.org/~boris/gammacorrection/)  
+下文讨论了Apple系统的QuickTime Gamma Shift问题的由来和可能的应对办法：
+[Why are videos washed out on the Mac?](https://blog.dominey.photography/2021/01/24/why-are-videos-washed-out-on-the-mac-exploring-quicktime-gamma-shift/)
 
 ## 编码
 
 [HDR关键技术：HEVC/H.265编码优化 - 云+社区 - 腾讯云](https://cloud.tencent.com/developer/article/1180918)  
+
+## 后期制作
+[一文掌握达芬奇最重要的节点：串行、并行和外部节点](http://www.cnrft.com/news/show/1466/)
+[达芬奇的并行节点/串行节点/层节点的用途和三者的区别](https://www.newvfx.com/forums/topic/30515)
 
 ## 其他
 
