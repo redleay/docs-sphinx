@@ -15,10 +15,55 @@ gdb -p $PID
 (gdb) quit
 ```
 
-## Valgrind
+## 内存检测
 
 ```
 valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all $CMD
+```
+
+## 性能瓶颈分析
+
+### gprof
+
+采用静态编译和链接，编译时打开`-pq`选项
+正常执行$CMD
+分析结果gprof $CMD > prof.txt
+
+### Valgrind
+
+执行
+
+```
+valgrind --tool=callgrind --separate-threads=yes $CMD
+```
+
+使用QCacheGrind可视化结果
+
+### gperftools
+
+安装依赖库，下载和编译安装gperftools，会安装libprofiler.so、libtcmalloc.so等库文件, 性能报告生成工具pprof
+
+```
+./configure && make && make install
+sudo yum install -y libunwind
+```
+
+启用profiler库，以下两种方法二选一
+
+1. 编译链接时加上`-lprofiler`选项
+2. 使用LD_PRELOAD环境变量将libprofiler.so hook进程序，这种方法不需要重新编译程序：`LD_PRELOAD=/usr/local/lib/libprofiler.so $CMD
+
+收集性能数据，server.prof为输出结果，500为每秒收集频率
+
+```
+CPUPROFILE=server.prof CPUPROFILE_FREQUENCY=500 ./server
+```
+
+导出报告
+
+```
+sudo apt install graphviz ghostscript
+pprof --pdf ./server server.prof > perf.pdf
 ```
 
 ## GDB命令
@@ -29,6 +74,7 @@ valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all $CMD
 | dir dirname                             | 添加新的源码路径到搜索路径，多个时用冒号分开           |
 | display                                 | 自动打印调试信息                                       |
 | undisplay                               | 取消自动打印调试信息                                   |
+| watch                                   | 监控断点，当监控变量或内存的内容变化时停止运行         |
 | tb                                      | 临时断点                                               |
 | x/nfu addr                              | 打印内存块，n: 单元数量，f: 输出格式(bodx, 2-8-10-16进制)，u: 单元长度(bhwg, 1-2-4-8字节) |
 | attach PID                              | 附上PID进程并进入调试                                  |
