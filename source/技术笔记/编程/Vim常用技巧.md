@@ -1,5 +1,30 @@
 # Vim常用技巧
 
+## 常用快捷键
+
+| 快捷键   | 作用 |
+| ----     | ---- |
+| CTRL+]   | 跳转tag |
+| CTRL+w+] | 新窗口跳转tag |
+| CTRL+o   | 返回tag |
+| CTRL+t   | 返回tag |
+
+## 模式匹配
+
+```
+\{n,m} Matches n to m of the preceding atom, as many as possible
+\{n} Matches n of the preceding atom
+\{n,} Matches at least n of the preceding atom, as many as possible
+\{,m} Matches 0 to m of the preceding atom, as many as possible
+\{} Matches 0 or more of the preceding atom, as many as possible (like *)
+*/\{-*
+\{-n,m} matches n to m of the preceding atom, as few as possible
+\{-n} matches n of the preceding atom
+\{-n,} matches at least n of the preceding atom, as few as possible
+\{-,m} matches 0 to m of the preceding atom, as few as possible
+\{-} matches 0 or more of the preceding atom, as few as possible
+```
+
 ## 配置管理
 
 ```
@@ -14,16 +39,6 @@
 | :cnewer | 下一个quickfix窗口 |
 | :cnewer | 下一个quickfix窗口 |
 
-## Vundle插件管理
-
-| 命令 | 作用 |
-| ---- | ---- |
-| :PluginInstall | 安装插件 |
-| :PluginUpdate  | 更新插件 |
-| :PluginClean   | 移除插件 |
-| :PluginList    | 列出所有插件 |
-| :PluginSearch  | 查找插件 |
-
 ## 文本排序
 
 | 命令 | 作用 |
@@ -33,7 +48,14 @@
 | :%sort n       | 按数字大小排序 |
 | :%sort u       | 排序时去除重复行 |
 | :%sort! n      | 按照数字倒序排序 |
+| :%!shuf        | 随机排序 |
+| :%!sort -R     | 随机排序 |
 
+删除重复行
+:sort
+:g/^\(.\+\)$\n\1/d
+
+:%s/\(.\+\)\n\1/\1/g
 
 ## 文本对比
 
@@ -84,3 +106,16 @@ vimdiff -o FILE_LEFT FILE_RIGHT # 上下横屏
 ```
 :e ++ff=dos
 ```
+
+## 插件
+
+### Vundle
+
+| 命令 | 作用 |
+| ---- | ---- |
+| :PluginInstall | 安装插件 |
+| :PluginUpdate  | 更新插件 |
+| :PluginClean   | 移除插件 |
+| :PluginList    | 列出所有插件 |
+| :PluginSearch  | 查找插件 |
+

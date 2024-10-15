@@ -199,6 +199,23 @@ git mv FILEA FILEB
 git clean -fd
 ```
 
+## tag
+
+git tag # 查看本地分支tag
+git ls-remote --tags    # 查看远程所有tag
+git tag v1.1.0  # 给当前分支打tag
+git tag v1.0.0 -m "add tags information" 039bf8b    # 给特定的某个commit版本打tag
+git tag -d v1.0.0   # 删除本地某个tag
+
+删除远程的某个tag
+git push origin :v1.0.0
+git push -d origin v1.0.0
+
+将本地tag一次性推送到远程
+git push origin --tags
+将本地某个特定tag推送到远程
+git push origin v1.0.0
+
 ## 归档
 导出代码
 ```
@@ -376,5 +393,3 @@ last = log -1 HEAD
 rb = rebase -i
 cp = cherry-pick
 ```
-
-
