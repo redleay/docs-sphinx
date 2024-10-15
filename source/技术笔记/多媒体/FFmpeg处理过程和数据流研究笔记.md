@@ -308,7 +308,7 @@ FFmpeg的编码调用栈为：
 #9  0x000000000043a3da in main (argc=15, argv=0x7fffffffdca8) at fftools/ffmpeg.c:5054
 ```
 
-FFmpeg的编码器获取输入的待编码帧的调用栈为：
+FFmpeg的编码器输入帧的原始来源为解码器或filter的输出，与编码器之间通过AVLink链接，获取输入的待编码帧的调用栈为：
 
 ```
 #2  0x00007ffff7014bc4 in get_frame_internal (ctx=0x7d3e00, frame=0x7d46c0, flags=2, samples=0) at libavfilter/buffersink.c:125
@@ -317,6 +317,22 @@ FFmpeg的编码器获取输入的待编码帧的调用栈为：
 #5  0x0000000000439a1f in transcode_step () at fftools/ffmpeg.c:4805
 #6  0x0000000000439aec in transcode () at fftools/ffmpeg.c:4849
 #7  0x000000000043a3da in main (argc=15, argv=0x7fffffffdca8) at fftools/ffmpeg.c:5054
+```
+
+对于HEVC编码的场景，具体流转路径按从先到后、从上层到下层的顺序总结归纳如下:
+
+```
+. (AVFrame*)cur_frame                                   : @get_frame_internal > ff_inlink_consume_frame > ff_framequeue_take
+. (AVFrame*)frame                                       : @get_frame_internal > return_or_keep_frame > av_frame_move_ref
+. (AVFrame*)frame                                       : @av_buffersink_get_frame_flags
+. (AVFrame*)filtered_frame                              : @reap_filters > av_buffersink_get_frame_flags
+. (AVFrame*)filtered_frame                              : @reap_filters > do_video_out
+. (AVFrame*)in_picture                                  : @do_video_out
+. (AVFrame*)in_picture                                  : @do_video_out > avcodec_send_frame
+. (AVFrame*)frame                                       : @avcodec_send_frame > encode_send_frame_internal
+. (AVFrame*)avctx->internal->buffer_frame               : @encode_send_frame_internal
+. (AVFrame*)avctx->internal->es.in_frame                : @avcodec_send_frame > encode_receive_packet_internal > encode_simple_receive_packet > encode_simple_internal > ff_encode_get_frame
+. (AVFrame*)pic                                         : @encode_simple_internal > avctx->codec->encode2 = libt265_encode_frame
 ```
 
 在`get_frame_internal()`中，先通过`ff_inlink_consume_frame > ff_framequeue_take`调用路径获取当前帧存储到局部变量`cur_frame`，再通过`return_or_keep_frame > av_frame_move_ref`调用路径将`cur_frame`移动到形参`frame`中。
