@@ -11,17 +11,8 @@ List追加合并: `listC = listA + listB`
 
 List连接: `chain(bars_576p, bars_720p, bars_1080p)`
 
-## Numpy
-List转numpy.array：`np.array(listA)`
-numpy.array转List: `listA = numpyarrayA.tolist()`
-
-numpy.array：可直接通过`+-*/`实现逐个元素的加减乘除运算
-
-内置索引和赋值: `rgb[rgb < 0] = 0`
-条件选择和处理：`a = np.where((b > 0) & (b < 3), 1, 7)`
-条件选择和处理：`a = np.select([(b > 0) & (b < 3), (b > 6) & (b < 8)], [1, 7])`
-
 ## 迭代式
+
 单List循环: `[v for v in values]`
 
 双List循环: `[w for v in values for w in v.get("width")]`
@@ -30,13 +21,66 @@ numpy.array：可直接通过`+-*/`实现逐个元素的加减乘除运算
 
 多List循环返回特定值: `[b for w,b in zip(width_list, bitrate_list) if w == 720]`
 
-
 ## 数学计算
 
 ```
 math.floor()
 math.ceil ()
+```
+
+## Numpy
+手动定义np.array
+```
+coef = np.array([[1688, 683], [2146, 2951]])
+```
+
+numpy.array：可直接通过`+-*/`实现逐个元素的加减乘除运算
+
+List转numpy.array：`np.array(listA)`
+
+numpy.array转List: `listA = numpyarrayA.tolist()`
+
+内置索引和赋值: `rgb[rgb < 0] = 0`
+
+条件选择和处理：`a = np.where((b > 0) & (b < 3), 1, 7)`
+
+条件选择和处理：`a = np.select([(b > 0) & (b < 3), (b > 6) & (b < 8)], [1, 7])`
+
+```
 np.arange(low, high, step)
+img = np.power(img, m)
+img = np.multiply(img, c3)
+lms = np.dot(rgb, coef)
+rgb = np.clip(rgb, 0, 1)
+mask = np.ones((1, 1, 3), dtype=np.uint16)
+mask = np.zeros((1, 1, 3), dtype=np.uint16)
+```
+
+[教程](https://www.runoob.com/numpy/numpy-tutorial.html)
+
+## 图像处理
+
+读入和写出图像
+```
+img = cv2.imread(input, cv2.IMREAD_UNCHANGED)  # [H, W, C]
+cv2.imwrite(output, img)
+```
+
+RGB和GBR通道顺序转换
+```
+rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+```
+
+计算图像各通道的平均值和标准差
+```
+avg,std = cv2.meanStdDev(img)
+np.average()：根据在另一个数组中给出的各自的权重计算数组中元素的加权平均值
+np.mean()：数组中元素的算术平均值，可按轴计算
+np.median()：中位数
+np.amin()：计算数组中的元素沿指定轴的最小值
+np.amax()：计算数组中的元素沿指定轴的最大值
+np.ptp()：计算数组中元素最大值与最小值的差
 ```
 
 ## 日志检查
@@ -74,17 +118,33 @@ plt.savefig("Bitrate.png", bbox_inches='tight') # tight output
 
 pip设置镜像源和代理
 ```
-pip3 install tensorflow==1.10.0 -i https://mirrors.tencent.com/pypi/simple --trusted-host mirrors.tencent.com
-pip3 install tensorflow==1.10.0 -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
-pip3 install tensorflow==1.10.0 -i https://pypi.tuna.tsinghua.edu.cn/simple --proxy proxy.xxx.com
+pip3 install torch -i https://mirrors.tencent.com/pypi/simple  --trusted-host mirrors.tencent.com --proxy proxy.xxx.com
+pip3 install torch -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
+pip3 install torch -i https://mirrors.aliyun.com/pypi/simple   --trusted-host mirrors.aliyun.com
+pip3 install torch -i https://pypi.mirrors.ustc.edu.cn/simple  --trusted-host pypi.mirrors.ustc.edu.cn
 ```
-### Pypi国内镜像源
 
+pip设置信任镜像源
+```
+# 命令行方式
+pip config set global.index-url https://mirrors.tencent.com/pypi/simple/
+pip config set global.extra-index-url https://mirrors.tencent.com/repository/pypi/tencent_pypi/simple
+pip config set global.trusted-host mirrors.tencent.com
+
+# 修改配置文件方式
+$ cat ~/.config/pip/pip.conf
+index-url = https://mirrors.tencent.com/pypi/simple/
+extra-index-url = https://mirrors.tencent.com/repository/pypi/tencent_pypi/simple
+trusted-host = mirrors.tencent.com
+root-user-action = ignore
+```
+
+### Pypi国内镜像源
 [腾讯](https://mirrors.tencent.com/pypi/simple)
-[阿里云](http://mirrors.aliyun.com/pypi/simple)
-[豆瓣](http://pypi.douban.com/simple)
+[阿里云](https://mirrors.aliyun.com/pypi/simple)
 [清华](https://pypi.tuna.tsinghua.edu.cn/simple)
 [中科大](https://pypi.mirrors.ustc.edu.cn/simple)
+[豆瓣](https://pypi.douban.com/simple)
 
 ## Conda
 
@@ -111,6 +171,11 @@ pip3 install tensorflow==1.10.0 -i https://pypi.tuna.tsinghua.edu.cn/simple --pr
 | conda clean -y -all                         | remove all packages installed and cache       |
 | conda env export > environment_droplet.yml  | export env to yml file                        |
 
+```
+conda config --show channels    # 显示当前镜像源配置
+conda config --show-sources     # 显示镜像源配置文件路径
+```
+
 添加Conda镜像源：
 ```
 conda config --add channels https://mirrors.tencent.com/anaconda/pkgs/r/
@@ -123,6 +188,7 @@ conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/f
 conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
 conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
 conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/
+conda config --remove channels defaults
 conda config --set show_channel_urls yes
 ```
 
@@ -148,55 +214,9 @@ $ conda update -n base conda # 升级conda
 conda update --all # 更新全部应用
 ```
 
-## TensorBoard
-
-执行`tensorboard --logdir=LOG_PATH`，然后在浏览器中访问`http://localhost:6006/`便可以查看到图形
-
 ## 其他
 
 修改Linux系统语言编码，解决python获取Linux命令输出的中文字符乱码问题
 ```
 export LC_ALL="en_US.utf8"
-```
-
-查看编译Pytorch release版本时使用的CUDA版本
-```
->>> import torch
->>> torch.version.cuda
-```
-
-查看Pytorch实际运行时使用的CUDA版本
-```
->>> import torch
->>> import torch.utils
->>> import torch.utils.cpp_extension
->>> torch.utils.cpp_extension.CUDA_HOME
-```
-
-使用torch.jit.script()将pth类型模型导出为pt类型时
-```
-serialized_model = torch.jit.script(netG)
-serialized_model.save('model.pt')
-```
-输出以下报错：
-```
-torch.jit.frontend.NotSupportedError: Compiled functions can't take variable number of arguments or use keyword-only arguments with defaults:
-```
-原因：jit不支持DataParallel，解决方法为不使用nn.DataParallel()，且将模型参数的key的module.前缀删除，可参考[这篇文章](https://szukevin.site/2021/02/27/MODNet%E8%BD%AC%E6%88%90torchscript%E5%BD%A2%E5%BC%8F%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/)
-
-
-
-
-pytorch相关安装包下载地址
-```
-https://download.pytorch.org/whl/
-https://download.pytorch.org/whl/cu110/torch-1.7.0%2Bcu110-cp38-cp38-linux_x86_64.whl
-pip install torch-1.7.0+cu110-cp38-cp38-linux_x86_64.whl
-https://download.pytorch.org/whl/cu110/torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
-pip install torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
-```
-
-torchvision版本适配关系
-```
-https://pypi.org/project/torchvision/
 ```
