@@ -1,11 +1,19 @@
 # Python语法
 
+
+替换：数字替换为星号*
+
+```
+new = re.sub("[0-9]", "*", s)
+```
+
 ## 数据类型处理
+
 List转Set: `set(listA)`
 
 List转Dict: `dict.fromkeys(listA)`
 
-List去重: `list(set(listA)`
+List去重: `list(set(listA))`
 
 List追加合并: `listC = listA + listB`
 
@@ -21,14 +29,20 @@ List连接: `chain(bars_576p, bars_720p, bars_1080p)`
 
 多List循环返回特定值: `[b for w,b in zip(width_list, bitrate_list) if w == 720]`
 
+dict.keys()
+dict.values()
+for key,value in dict.items()
+
 ## 数学计算
 
 ```
-math.floor()
-math.ceil ()
+round()         # 四舍五入
+math.floor()    # 向下取整
+math.ceil()     # 向上取整
 ```
 
 ## Numpy
+
 手动定义np.array
 ```
 coef = np.array([[1688, 683], [2146, 2951]])
@@ -40,11 +54,22 @@ List转numpy.array：`np.array(listA)`
 
 numpy.array转List: `listA = numpyarrayA.tolist()`
 
+二维list转一维：`np.array(matrix).flatten().tolist()`
+
 内置索引和赋值: `rgb[rgb < 0] = 0`
 
 条件选择和处理：`a = np.where((b > 0) & (b < 3), 1, 7)`
 
 条件选择和处理：`a = np.select([(b > 0) & (b < 3), (b > 6) & (b < 8)], [1, 7])`
+
+计算分位点：`numpy.percentile(list, pencenttile)`
+四舍五入：`numpy.around(list)`
+
+numpy.bincount(x, /, weights=None, minlength=0)
+numpy.histogram(a, bins=10, range=None, density=None, weights=None)
+cv.calcHist()
+
+https://numpy.org/doc/2.0/reference/generated/numpy.bincount.html
 
 ```
 np.arange(low, high, step)
@@ -58,6 +83,18 @@ mask = np.zeros((1, 1, 3), dtype=np.uint16)
 
 [教程](https://www.runoob.com/numpy/numpy-tutorial.html)
 
+## 数学统计
+
+```
+avg,std = cv2.meanStdDev(img)：计算图像各通道的平均值和标准差
+np.average()：根据在另一个数组中给出的各自的权重计算数组中元素的加权平均值
+np.mean()：数组中元素的算术平均值，可按轴计算
+np.median()：中位数
+np.amin()：计算数组中的元素沿指定轴的最小值
+np.amax()：计算数组中的元素沿指定轴的最大值
+np.ptp()：计算数组中元素最大值与最小值的差
+```
+
 ## 图像处理
 
 读入和写出图像
@@ -66,21 +103,16 @@ img = cv2.imread(input, cv2.IMREAD_UNCHANGED)  # [H, W, C]
 cv2.imwrite(output, img)
 ```
 
-RGB和GBR通道顺序转换
+色彩空间转换：RGB/GBR通道转换
 ```
 rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
 bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
 ```
 
-计算图像各通道的平均值和标准差
+分离和合并通道
 ```
-avg,std = cv2.meanStdDev(img)
-np.average()：根据在另一个数组中给出的各自的权重计算数组中元素的加权平均值
-np.mean()：数组中元素的算术平均值，可按轴计算
-np.median()：中位数
-np.amin()：计算数组中的元素沿指定轴的最小值
-np.amax()：计算数组中的元素沿指定轴的最大值
-np.ptp()：计算数组中元素最大值与最小值的差
+b,g,r = cv.split(img)
+img = cv.merge([b,g,r])
 ```
 
 ## 日志检查
@@ -91,6 +123,7 @@ assert CONDITION, MESSAGE
 
 ## matplotlib绘图
 
+绘制直方图
 ```
 def get_ticks(data, batch):
     bias    = batch / 2
@@ -114,109 +147,32 @@ plt.legend()
 plt.savefig("Bitrate.png", bbox_inches='tight') # tight output
 ```
 
-## PIP
-
-pip设置镜像源和代理
-```
-pip3 install torch -i https://mirrors.tencent.com/pypi/simple  --trusted-host mirrors.tencent.com --proxy proxy.xxx.com
-pip3 install torch -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
-pip3 install torch -i https://mirrors.aliyun.com/pypi/simple   --trusted-host mirrors.aliyun.com
-pip3 install torch -i https://pypi.mirrors.ustc.edu.cn/simple  --trusted-host pypi.mirrors.ustc.edu.cn
-```
-
-pip设置信任镜像源
-```
-# 命令行方式
-pip config set global.index-url https://mirrors.tencent.com/pypi/simple/
-pip config set global.extra-index-url https://mirrors.tencent.com/repository/pypi/tencent_pypi/simple
-pip config set global.trusted-host mirrors.tencent.com
-
-# 修改配置文件方式
-$ cat ~/.config/pip/pip.conf
-index-url = https://mirrors.tencent.com/pypi/simple/
-extra-index-url = https://mirrors.tencent.com/repository/pypi/tencent_pypi/simple
-trusted-host = mirrors.tencent.com
-root-user-action = ignore
-```
-
-### Pypi国内镜像源
-[腾讯](https://mirrors.tencent.com/pypi/simple)
-[阿里云](https://mirrors.aliyun.com/pypi/simple)
-[清华](https://pypi.tuna.tsinghua.edu.cn/simple)
-[中科大](https://pypi.mirrors.ustc.edu.cn/simple)
-[豆瓣](https://pypi.douban.com/simple)
-
-## Conda
-
-| command                                     | usage                                         |
-| -----                                       | -----                                         |
-| conda create --name py35 python=3.5         | create env                                    |
-| conda remove --name py35 --all              | delete env                                    |
-| conda create -n bak --clone src             | clone  env                                    |
-| conda activate 3dlut                        | enter env                                     |
-| conda deactivate                            | exit env                                      |
-| conda info                                  | show conda info                               |
-| conda info -e                               | show env                                      |
-| conda install -n py35 numpy                 | install package                               |
-| conda install --yes --file requirements.txt | install package via requirement file          |
-| conda search numpy                          | search package                                |
-| conda list -n py35                          | list package installed                        |
-| conda update -n py35 numpy                  | update package                                |
-| conda remove -n py35 numpy                  | delete package                                |
-| conda update conda                          | update conda                                  |
-| conda update anaconda                       | update anaconda                               |
-| conda config --set auto_activate_base false | disable auto-activate base env while logining |
-| conda clean -p                              | clean unused packages                         |
-| conda clean -t                              | archive packages via tar                      |
-| conda clean -y -all                         | remove all packages installed and cache       |
-| conda env export > environment_droplet.yml  | export env to yml file                        |
-
-```
-conda config --show channels    # 显示当前镜像源配置
-conda config --show-sources     # 显示镜像源配置文件路径
-```
-
-添加Conda镜像源：
-```
-conda config --add channels https://mirrors.tencent.com/anaconda/pkgs/r/
-conda config --add channels https://mirrors.tencent.com/anaconda/pkgs/main/
-conda config --add channels https://mirrors.tencent.com/anaconda/pkgs/free/
-conda config --remove channels defaults
-conda config --set show_channel_urls yes
-
-conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
-conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
-conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
-conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/
-conda config --remove channels defaults
-conda config --set show_channel_urls yes
-```
-
-修改conda的envs_dirs和pkgs_dirs：
-可以通过编辑 \$HOME/.condarc 来实现。添加或修改 env_dirs 和 pkgs_dirs 配置项分别设置环境和缓存路径，按顺序第一个路径作为默认存储路径，搜索环境和缓存时按先后顺序在各目录中查找
-```
-envs_dirs:
-  - /home/redleay/.conda/envs
-  - /data/miniconda3/envs
-pkgs_dirs:
-  - /home/redleay/.conda/pkgs
-  - /data/miniconda3/pkgs
-```
-
-conda安装应用报错：
-```
-Solving environment: failed with initial frozen solve. Retrying with flexible solve
-```
-解决办法：
-```
-$ conda -V # 查询conda版本
-$ conda update -n base conda # 升级conda
-conda update --all # 更新全部应用
-```
-
 ## 其他
 
 修改Linux系统语言编码，解决python获取Linux命令输出的中文字符乱码问题
 ```
 export LC_ALL="en_US.utf8"
 ```
+
+递归列出目录下所有mp4文件
+```
+glob.glob('./test/**/*.mp4', recursive=True)
+```
+
+检测文件名字符串 name 是否匹配模式字符串 pat
+```
+fnmatch.fnmatch(name, pat)      # 大小写不敏感，pat = '*.mp4'
+fnmatch.fnmatchcase(name, pat)  # 大小写敏感
+```
+
+查找匹配 pat 的文件列表，基于 iterable names 中匹配模式 pat 的元素构造一个列表
+```
+fnmatch.filter(names, pat)
+```
+
+os.listdir(path)
+
+
+list原地排序
+filelist.sort()
+

@@ -6,24 +6,90 @@
 | ----     | ---- |
 | CTRL+]   | 跳转tag |
 | CTRL+w+] | 新窗口跳转tag |
-| CTRL+o   | 返回tag |
 | CTRL+t   | 返回tag |
+| CTRL+o   | 返回 |
 
 ## 模式匹配
 
+元字符
 ```
-\{n,m} Matches n to m of the preceding atom, as many as possible
-\{n} Matches n of the preceding atom
-\{n,} Matches at least n of the preceding atom, as many as possible
-\{,m} Matches 0 to m of the preceding atom, as many as possible
-\{} Matches 0 or more of the preceding atom, as many as possible (like *)
-*/\{-*
-\{-n,m} matches n to m of the preceding atom, as few as possible
-\{-n} matches n of the preceding atom
-\{-n,} matches at least n of the preceding atom, as few as possible
-\{-,m} matches 0 to m of the preceding atom, as few as possible
-\{-} matches 0 or more of the preceding atom, as few as possible
+. 匹配任意一个字符
+\t 匹配<TAB>字符。
+\n
+\r
+
+[abc] 匹配方括号中的任意一个字符。可以使用-表示字符范围，如[a-z0-9]匹 配小写字母和阿拉伯数字。
+[^abc] 在方括号内开头使用^符号，表示匹配除方括号中字符之外的任意字符。
+
+\d 匹配阿拉伯数字，等同于[0-9]。
+\x 匹配十六进制数字，等同于[0-9A-Fa-f]。
+\w 匹配单词字母，等同于[0-9A-Za-z_]。
+\s 匹配空白字符，等同于[ \t]。
+
+\D 匹配阿拉伯数字之外的任意字符，等同于[^0-9]。
+\X 匹配十六进制数字之外的任意字符，等同于[^0-9A-Fa-f]。
+\W 匹配单词字母之外的任意字符，等同于[^0-9A-Za-z_]。
+\S 匹配非空白字符，等同于[^ \t]。
 ```
+
+数量
+
+```
+*  匹配任意个
+?  匹配0个或1个
+\+ 匹配1个或多个
+
+# as many as possible
+\{}     Matches 0 or more (like *)
+\{n,m}  Matches n to m
+\{n,}   Matches at least n
+\{,m}   Matches 0 to m
+\{n}    Matches n
+
+# as few as possible
+\{-}    matches 0 or more
+\{-n,m} matches n to m
+\{-n,}  matches at least n
+\{-,m}  matches 0 to m
+\{-n}   matches n
+```
+
+位置
+
+```
+$ 匹配行尾
+^ 匹配行首
+< 匹配单词词首
+> 匹配单词词尾
+```
+
+转义字符
+
+```
+\. 匹配 . 字符。
+\* 匹配 * 字符。
+\/ 匹配 / 字符。
+\ 匹配 \ 字符。
+\[ 匹配 [ 字符。
+```
+
+逻辑关系
+
+```
+\&  与
+\|  或
+```
+
+## 搜索替换
+
+标记g：表示全局搜索，对每一个匹配结果进行操作，缺省标记g，则只对第一个匹配结果进行操作。
+标记c：表示操作前需要进行确认。
+标记i：表示大小写不敏感。
+标记I：表示大小写敏感。
+
+分组
+\(
+\)
 
 ## 配置管理
 
@@ -41,29 +107,63 @@
 
 ## 文本排序
 
-| 命令 | 作用 |
+### 内置命令:sort
+
+对`[range]`范围，根据每行匹配`{pattern}`之内或之后的文本进行排序（而且是稳定排序）
+
+```
+:[range]sort[!] [b][o][n][x][f][i][r][u] [/{pattern}/]
+:help :sort # 查看:sort的help
+```
+
+| 参数 | 作用 |
 | ---- | ---- |
-| :%sort         | 排序 |
-| :%sort!        | 倒序排序 |
-| :%sort n       | 按数字大小排序 |
-| :%sort u       | 排序时去除重复行 |
-| :%sort! n      | 按照数字倒序排序 |
-| :%!shuf        | 随机排序 |
-| :%!sort -R     | 随机排序 |
+| range | 排序范围，默认为`%`，即对整个文档排序 |
+| ! | 反向排序 |
+| b | 基于每行的第1个2进制数排序 |
+| o | 基于每行的第1个8进制数排序 |
+| n | 基于每行的第1个10进制数排序，包含前导的`-` |
+| x | 基于每行的第1个16进制数排序，包含前导的`-`，忽略`0x`或`0X` |
+| f | 基于每行的第1个浮点数排序，仅当 Vim 编译时支持浮点数时才有效 |
+| r | 基于`{pattern}`匹配的内容排序，否则基于匹配之后的内容排序 |
+| i | 忽略大小写 |
+| u | 只保留完全相同的行的第一行 |
+
+示例：
+
+```
+:sort         # 排序
+:sort!        # 倒序排序
+:sort n       # 按数字大小排序
+:sort u       # 排序并去除重复行
+:uniq         # 去除重复行
+:sort r       # 随机排序
+```
 
 删除重复行
+```
+# 方法1
 :sort
 :g/^\(.\+\)$\n\1/d
-
+# 方法2
+:sort
 :%s/\(.\+\)\n\1/\1/g
+```
+
+### 外部命令
+
+```
+:!sort -R     # 随机排序
+:!shuf        # 随机排序
+```
 
 ## 文本对比
 
 启动对比命令
 ```
-vimdiff FILE_LEFT FILE_RIGHT
-vimdiff -d FILE_LEFT FILE_RIGHT # 左右竖屏
-vimdiff -o FILE_LEFT FILE_RIGHT # 上下横屏
+vimdiff LEFT RIGHT
+vimdiff -d LEFT RIGHT # 左右竖屏
+vimdiff -o LEFT RIGHT # 上下横屏
 ```
 
 对比操作

@@ -30,6 +30,331 @@ strings /lib64/libc.so.6 \| grep GLIBC
 ```
 
 
+## 账号管理
+
+查看账号user的信息
+```
+id user
+```
+
+修改HOME目录：
+```
+usermod -d NEWHOME -u uid USERNAME
+```
+
+将user添加到group中
+```
+sudo usermod -a -G group user
+sudo usermod -a -G group1,group2 user
+```
+
+更改user的primary group
+```
+sudo usermod -g group user
+```
+
+sudo groupadd groupname
+sudo groupdel groupname
+
+## 字符串操作
+
+获取string的长度
+```
+${#string}
+```
+
+在string中, 从位置position开始提取子串
+
+```
+${string:position}
+```
+
+在string中, 从位置position开始提取长度为length的子串
+```
+${string:position:length}
+```
+
+从变量string的开头, 删除最短匹配substring的子串
+```
+${string#substring}
+```
+
+从变量string的开头, 删除最长匹配substring的子串
+```
+${string##substring}
+```
+
+从变量string的结尾, 删除最短匹配substring的子串
+```
+${string%substring}
+```
+
+从变量string的结尾, 删除最长匹配substring的子串
+```
+${string%%substring}
+```
+
+删除变量string结尾的空格
+```
+${string%%[[:space:]]\*}
+```
+
+使用replacement, 来代替第一个匹配的substring
+```
+${string/substring/replacement}
+```
+
+使用replacement, 代替所有匹配的substring
+```
+${string//substring/replacement}
+```
+
+如果string的前缀匹配substring, 那么就用replacement来代替匹配到的substring
+```
+${string/#substring/replacement}
+```
+
+如果string的后缀匹配substring, 那么就用replacement来代替匹配到的substring
+```
+${string/%substring/replacement}
+```
+
+
+## sed & ed
+
+原地编辑
+```
+# 第1种in-place编辑方法在docker中存在权限问题，推荐使用其他方法
+sed -i 'xxx' FILE
+sed -ci 'xxx' FILE
+sed 'xxx' FILE > NEWFILE
+printf "%s\n" '1,$s/search/replace/g' wq | ed -s file
+```
+
+删除第N行
+```
+sed 'Nd' FILE
+```
+
+删除最后一行
+```
+sed '$d' FILE
+```
+
+删除第5到7行
+```
+sed '5,7d' FILE
+```
+
+删除第5、7行
+```
+sed '5d;7d' FILE
+```
+
+只保留第5到7行
+```
+sed '5,7!d' FILE
+```
+
+对第3行，将其中的aaa替换为fff
+```
+sed '3s/aaa/fff/' FILE
+```
+
+对所有行，在行首插入fff
+```
+sed 's/^/fff/' FILE
+```
+
+找出包含xxx的行，并将其中的aaa替换为fff
+```
+sed '/xxx/s/aaa/fff/g' FILE
+```
+
+对第1行，将其中的#号或是\*号替换为fff
+```
+sed '1s/[#\*]/fff/gp' FILE
+```
+
+删除空行
+```
+sed '/^[ ]\*$/d' FILE
+```
+
+删除包含error的行
+```
+sed '/error/d' FILE
+```
+
+删除不包含error的行
+```
+sed '/error/!d' FILE
+```
+
+查找inputXX并替换为变量$v的内容，使用双引号
+```
+sed "s#inputXX#$v#" FILE
+```
+
+查找数字
+```
+sed "s/[0-9]//" FILE
+```
+
+匹配分组
+```
+sed "s/\(XXX\)/\1,\1/" FILE
+```
+
+第3行前插入New Line
+```
+sed '3i New line' FILE
+```
+
+最后1行后插入New Line
+```
+sed '$a New line' FILE
+```
+
+## 排序
+
+以数值来排序
+```
+sort -n
+```
+
+以"\_"为分隔符，以第2列进行数值排序
+```
+sort -t \_ -k 2 -n
+```
+
+以"\_"为分隔符，先第3列进行稳定的数值排序，后第2列进行数值排序
+```
+sort -t \_ -k2n -k3n -s
+```
+
+sort -t . -k1,1 -s|  先以"\_"为分隔符，第2列进行数值排序，后以"."为分隔符，第1列进行稳定的排序
+```
+sort -t \_ -k2n
+```
+
+排序并删除重复行
+```
+sort -u
+sort | uniq
+```
+
+随机排序
+```
+shuf
+```
+
+
+## tr
+
+删除字符串中的换行符
+```
+`tr -d '\n\r'`
+```
+
+
+## 归档压缩
+
+创建归档，将bin和lib目录归档到压缩包
+```
+tar -c[zj]vf archive.tar.gz bin/ lib/
+```
+
+解压归档，将压缩包解压到DIR目录
+```
+tar -x[zj]vf archive.tar.gz -C DIR
+```
+
+查看归档，查看压缩包内文件列表
+```
+tar -t[zj]vf archive.tar.gz
+```
+
+创建归档
+```
+zip archive.zip -r ffmpeg/ pooltrans-1.0/
+```
+
+创建归档，并分割为每个4000M
+```
+tar -cvf All.tar All/ | split -b 4000M -d -a 1 - Split.tar.
+```
+
+解压分割后的压缩文件
+```
+cat Split.tar.\* | tar -xv
+```
+
+从压缩包中获取所有文件列表，排除目录
+```
+tar -tzvf archive.tar.gz | awk '$1 ~ /^-/{print $NF}'
+```
+
+
+## ln链接
+
+为file创建软链接softlink
+```
+ln -s file softlink
+```
+
+为file创建硬链接hardlink
+```
+ln file hardlink
+```
+
+
+## 进程管理
+
+查看进程stdout
+```
+strace -ewrite -p $PID
+```
+
+查看正在后台运行的任务状态
+```
+jobs
+```
+
+将任务调度到前台运行，不带jobnumber时表示对最后一个进程操作
+```
+fg jobnumber
+```
+
+将任务调度到后台运行，不带jobnumber时表示对最后一个进程操作
+```
+bg jobnumber
+```
+
+将前台任务调度到后台中暂停，显示jobnumber
+```
+Ctrl-Z
+```
+
+
+## 编译
+
+打印make执行的命令
+```
+make VERBOSE=1
+```
+
+指定make install的安装路径
+```
+make install PREFIX=/usr/local/test
+```
+
+查询exe或lib是否存在\_debug开头的段，有则携带debug信息
+```
+readelf -S exe\|lib
+```
+
+
 ## 语法
 
 循环
@@ -108,300 +433,57 @@ while read line; do cp "$line" $dst; done < $file
 IFS=$'\n'
 ```
 
-
-## 字符串操作
-
-获取string的长度
-```
-${#string}
-```
-
-在string中, 从位置position开始提取子串
-
-```
-${string:position}
-```
-
-在string中, 从位置position开始提取长度为length的子串
-```
-${string:position:length}
-```
-
-从变量string的开头, 删除最短匹配substring的子串
-```
-${string#substring}
-```
-
-从变量string的开头, 删除最长匹配substring的子串
-```
-${string##substring}
-```
-
-从变量string的结尾, 删除最短匹配substring的子串
-```
-${string%substring}
-```
-
-从变量string的结尾, 删除最长匹配substring的子串
-```
-${string%%substring}
-```
-
-删除变量string结尾的空格
-```
-${string%%[[:space:]]\*}
-```
-
-使用replacement, 来代替第一个匹配的substring
-```
-${string/substring/replacement}
-```
-
-使用replacement, 代替所有匹配的substring
-```
-${string//substring/replacement}
-```
-
-如果string的前缀匹配substring, 那么就用replacement来代替匹配到的substring
-```
-${string/#substring/replacement}
-```
-
-如果string的后缀匹配substring, 那么就用replacement来代替匹配到的substring
-```
-${string/%substring/replacement}
-```
-
-
-## sed
-
-删除第N行
-```
-sed 'Nd' FILE
-```
-
-删除最后一行
-```
-sed '$d' FILE
-```
-
-删除第5到7行
-```
-sed '5,7d' FILE
-```
-
-删除第5、7行
-```
-sed '5d;7d' FILE
-```
-
-只保留第5到7行
-```
-sed '5,7!d' FILE
-```
-
-对第3行，将其中的aaa替换为fff
-```
-sed -i '3s/aaa/fff/' FILE
-```
-
-对所有行，在行首插入fff
-```
-sed -i 's/^/fff/' FILE
-```
-
-找出包含xxx的行，并将其中的aaa替换为fff
-```
-sed -i '/xxx/s/aaa/fff/g' FILE
-```
-
-对第1行，将其中的#号或是\*号替换为fff
-```
-sed -i '1s/[#\*]/fff/gp' FILE
-```
-
-删除空行
-```
-sed -i '/^[ ]\*$/d' FILE
-```
-
-删除包含error的行
-```
-sed -i '/error/d' FILE
-```
-
-删除不包含error的行
-```
-sed -i '/error/!d' FILE
-```
-
-查找inputXX并替换为变量$v的内容，使用双引号
-```
-sed -i "s#inputXX#$v#" FILE
-```
-
-查找数字
-```
-sed -i "s/[0-9]//" FILE
-```
-
-匹配分组
-```
-sed -i "s/\(XXX\)/\1,\1/" FILE
-```
-
-第3行前插入New Line
-```
-sed -i '3i New line' FILE
-```
-
-最后1行后插入New Line
-```
-sed -i '$a New line' FILE
-```
-
-
-## 排序
-
-以数值来排序
-```
-sort -n
-```
-
-以"\_"为分隔符，以第2列进行数值排序
-```
-sort -t \_ -k 2 -n
-```
-
-以"\_"为分隔符，先第3列进行稳定的数值排序，后第2列进行数值排序
-```
-sort -t \_ -k2n -k3n -s
-```
-
-sort -t . -k1,1 -s|  先以"\_"为分隔符，第2列进行数值排序，后以"."为分隔符，第1列进行稳定的排序
-```
-sort -t \_ -k2n
-```
-
-随机排序
-```
-shuf
-```
-
-
-## tr
-
-删除字符串中的换行符
-```
-`tr -d '\n\r'`
-```
-
-
-## 归档压缩
-
-创建归档，将bin和lib目录归档到压缩包
-```
-tar -c[zj]vf archive.tar.gz bin/ lib/
-```
-
-解压归档，将压缩包解压到DIR目录
-```
-tar -x[zj]vf archive.tar.gz -C DIR
-```
-
-查看归档，查看压缩包内文件列表
-```
-tar -t[zj]vf archive.tar.gz
-```
-
-创建归档
-```
-zip archive.zip -r ffmpeg/ pooltrans-1.0/
-```
-
-创建归档，并分割为每个4000M
-```
-tar -cvf All.tar All/ | split -b 4000M -d -a 1 - Split.tar.
-```
-
-解压分割后的压缩文件
-```
-cat Split.tar.\* | tar -xv
-```
-
-从压缩包中获取所有文件列表，排除目录
-```
-tar -tzvf archive.tar.gz | awk '$1 ~ /^-/{print $NF}'
-```
-
-
-## ln链接
-
-为file创建软链接softlink
+并行处理
 ```
-ln -s file softlink
-```
+proc=10     # parallel number
+mkfifo ./fifo && exec 3<> ./fifo && rm -rf ./fifo; for ((i=0; i<$proc; i++)) do echo >&3; done
+for f in `ls *.dng`
+do
+  read -u 3
 
-为file创建硬链接hardlink
+  {
+    # do things
+    echo >&3
+  }&
+done
+wait
 ```
-ln file hardlink
-```
-
 
+## 网络
 
-## 前后台调度
-
-查看正在运行的任务状态
-```
-jobs
+设置Shell代理
 ```
-
-将任务调度到前台运行，不带jobnumber时表示对最后一个进程操作
+export http_proxy="http://proxy.xxx.com"
+export https_proxy="http://proxy.xxx.com"
+export no_proxy="mirrors.xxx.com
 ```
-fg jobnumber
-```
 
-将任务调度到后台运行，不带jobnumber时表示对最后一个进程操作
+取消Shell代理
 ```
-bg jobnumber
+unset http_proxy
+unset https_proxy
+unset no_proxy
 ```
 
-将前台任务调度到后台中暂停，显示jobnumber
+实时网速和流量情况
 ```
-Ctrl-Z
+sudo nload eth0 -m
+sudo nload -m
+vnstat -i eth0 -l  # 查看实时流量
+iftop -i eth1
+nethogs -d 5 eth0  # 每5秒种刷新1次
 ```
-
 
 
-## 编译
+## yum软件包管理
 
-打印make执行的命令
-```
-make VERBOSE=1
-```
-
-指定make install的安装路径
-```
-make install PREFIX=/usr/local/test
-```
 
-查询exe或lib是否存在\_debug开头的段，有则携带debug信息
 ```
-readelf -S exe\|lib
+yum -y install https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
 ```
 
 
 ## 其他常用命令
-
-修改HOME目录：
-```
-usermod -d NEWHOME -u uid USERNAME
-```
-
-排序并删除重复行
-```
-sort | uniq
-```
 
 下载文件时中文文件名不转义
 ```
@@ -432,58 +514,8 @@ ls -l | grep "^d" | awk '{print $9}'
 
 列出目录和文件的完整路径
 ```
+find . -type f -print0 | xargs -0 ls -d
 find . | tr " " "\?" | xargs ls -ld
-find . -type f -print0 | xargs -0 ls -ld
-```
-
-设置Shell代理
-```
-export http_proxy="http://proxy.xxx.com"
-export https_proxy="http://proxy.xxx.com"
-export no_proxy="mirrors.xxx.com
-```
-
-取消Shell代理
-```
-unset http_proxy
-unset https_proxy
-unset no_proxy
-```
-
-并行处理
-```
-proc=10     # parallel number
-mkfifo ./fifo && exec 3<> ./fifo && rm -rf ./fifo
-for ((i=0; i<$proc; i++))
-do
-  echo >&3
-done
-
-for f in `ls *.dng`
-do
-  read -u 3
-
-  {
-    # do things
-    echo >&3
-  }&
-done
-
-wait
-```
-
-实时网速和流量情况
-```
-sudo nload eth0 -m
-sudo nload -m
-vnstat -i eth0 -l  # 查看实时流量
-iftop -i eth1
-nethogs -d 5 eth0  # 每5秒种刷新1次
-```
-
-查看进程stdout
-```
-strace -ewrite -p $PID
 ```
 
 valgrind检测内存泄漏
@@ -547,9 +579,4 @@ https://packages.endpointdev.com/rhel/2.2/os/x86_64/repodata/repomd.xml: [Errno 
 ```
 使用以下命令`sudo yum --disablerepo=endpoint install graphviz ghostscript`解决
 
-yum
-
-```
-yum -y install https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
-```
 
