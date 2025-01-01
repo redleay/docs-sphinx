@@ -2,7 +2,33 @@
 
 [toc]
 
-## pth模型导出为pt模型
+## pth/pt文件
+
+### pth内容
+
+.pth文件通常包含两种内容：
+1. 模型参数：训练过程中学习到的weight和bias等数值
+2. 整个模型：除了参数外，还保存模型的结构信息，即模型的层、激活函数、损失函数等定义和配置。在加载模型时可直接从.pth文件中恢复模型结构，不需要重新定义模型结构
+
+### pth保存和加载
+
+1. 保存模型参数
+
+```
+torch.save(model, "model.pth")
+model = torch.load("model.pth")
+```
+
+2. 仅保存模型参数
+
+```
+torch.save(model.state_dict(), "model.pth")
+
+model = ResNet.ResNet()
+model.load_state_dict(torch.load("model.pth"))
+```
+
+### pth转pt
 
 使用torch.jit.script()将pth类型模型导出为pt类型时
 
@@ -49,3 +75,4 @@ std::cout<<"civilnet->forward(inputs).toTensor() "<<msg<<std::endl;
 export CUDA_LAUNCH_BLOCKING=1
 ```
 
+## pth/pt文件
