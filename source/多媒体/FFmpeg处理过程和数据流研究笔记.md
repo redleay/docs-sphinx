@@ -478,3 +478,53 @@ FFmpeg初始化`output_stream`和`output_stream[0]`等全局变量的调用栈�
 #10 0x0000000000439a20 in transcode () at fftools/ffmpeg.c:4820
 #11 0x000000000043a3bb in main (argc=11, argv=0x7fffffffdd38) at fftools/ffmpeg.c:5054
 ```
+
+## FFmpeg开发常见问题
+
+### ffmpeg filter release版本处理首帧后抛出内存不足错误，debug版本正常
+
+问题描述：
+
+报错信息为
+```
+Error while filtering: Cannot allocate memory
+Failed to inject frame into filter network: Cannot allocate memory
+```
+
+原因：
+
+filter_frame函数的返回值未初始化，debug版本默认初始化为0，ffmpeg视为正常返回值，release版本默认不初始化，为随机值，ffmpeg视为异常返回值，经过错误处理程序后被当作AV_ERROR(ENOMEM)错误为处理。
+
+解决办法：
+
+初始化filter_frame返回值，根据需要返回正确的返回值。
+
+### ffmpeg filter多输出一些图像帧
+
+问题描述：
+
+ffmpeg处理时，理论上输出帧数应当等于输入帧数，但实际上输出帧数为17，大于输入帧数10，且从以下ffmpeg日志中的`dup`字符可看出，多输出的帧为最后一帧的重复帧
+```
+*** 7 dup!
+[out_0_0 @ 0x126a280] EOF on sink link out_0_0:default.
+0.28 bitrate=8874664.3kbits/s dup=7 drop=0 speed=0.00146x    
+No more output streams to write to, finishing.
+frame= 17 fps=0.1 q=-0.0 Lsize=  307148kB time=00:00:00.28 bitrate=8880548.0kbits/s dup=7 drop=0 speed=0.00146x    
+Input file #0 (i_YongYeXingHe05.4K.60fps.hdrvivid.f10.mp4):
+  Input stream #0:0 (video): 10 packets read (877049 bytes); 10 frames decoded; 
+  Total: 10 packets (877049 bytes) demuxed
+Output file #0 (o_YongYeXingHe05.4K.60fps.hdrvivid.f10.ffm.yuv):
+  Output stream #0:0 (video): 17 frames encoded; 17 packets muxed (314519040 bytes); 
+  Total: 17 packets (314519040 bytes) muxed
+```
+
+原因：
+
+输入mp4等文件中包含有特殊的pts时间戳信息
+
+解决方法：
+
+在ffmepg命令行中增加以下相关参数：
+```
+-vsync 0
+```

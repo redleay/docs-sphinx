@@ -184,6 +184,36 @@ git diff COMMIT1 COMMIT2    # 针对已添加到暂存区的情况
 git diff BRANCH1 BRANCH2    # 显示出所有有差异的文件的详细差异
 ```
 
+## 补丁patch
+
+Git提供了两种补丁方案，一是用git diff生成的UNIX标准补丁.diff文件，二是git format-patch生成的Git专用.patch文件。
+.diff文件只是记录文件改变的内容，不带有commit记录信息,多个commit可以合并成一个diff文件。
+.patch文件带有记录文件改变的内容，也带有commit记录信息,每个commit对应一个patch文件。
+
+`git diff`的使用方法参考其他相关章节。
+
+生成COMMIT（含）之前的n次提交的patch，生成文件名为0001-COMMIT-LOG.patch格式
+```
+git format-patch COMMIT -n
+```
+
+检查patch文件
+```
+git apply --stat XXX.patch
+```
+
+查看patch是否能正常打入
+```
+git apply --check XXX.patch
+```
+
+打入patch
+```
+git apply XXX.patch         # 只应用patch，需要重新提交
+git am XXX.diff             # 类似于cherry-pick，保留原作者提交，不需要重新提交
+git am --signoff XXX.diff   # 增加signed off by信息
+```
+
 ## 文件
 
 删除文件
@@ -346,6 +376,14 @@ ssh-add ~/.ssh/XXX_id_rsa
 配置本地密钥缓存
 ```
 git config --global credential.helper store
+```
+
+## 中文配置
+
+```
+git config --global i18n.commitencoding utf-8
+git config --global i18n.logoutputencoding utf-8
+export LESSCHARSET=utf-8
 ```
 
 ## 别名配置
