@@ -39,6 +39,8 @@ for key,value in dict.items()
 round()         # 四舍五入
 math.floor()    # 向下取整
 math.ceil()     # 向上取整
+np.maximum(img, a)  # 按元素取较大值，a为标量时自动广播
+np.minimum(img, a)  # 按元素取较小值，a为标量时自动广播
 ```
 
 ## Numpy
@@ -115,6 +117,20 @@ b,g,r = cv.split(img)
 img = cv.merge([b,g,r])
 ```
 
+```
+gblur = torchvision.transforms.GaussianBlur(31, 10)
+gblur(uv_index.permute(2, 0, 1)).permute(1, 2, 0)
+
+img = cv2.blur(img, (15, 15))
+img = cv2.boxFilter(img, -1, (15, 15))
+img = cv2.medianBlur(img, 9)
+img = cv2.bilateralFilter(img, 0, 150, 20)
+img = cv2.ximgproc.guidedFilter(img, img, 29, 5000, -1)
+
+torch.stack((u, v), dim=2)
+torch.nn.functional.grid_sample(model, uv_index, align_corners=True)
+```
+
 ## 日志检查
 
 ```
@@ -176,3 +192,28 @@ os.listdir(path)
 list原地排序
 filelist.sort()
 
+
+
+
+f-string采用 {content:format} 设置字符串格式，其中 content 是替换并填入字符串的内容，可以是变量、表达式或函数等，format 是格式描述符。采用默认格式时不必指定 {:format}，如上面例子所示只写 {content} 即可。
+关于格式描述符的详细语法及含义可查阅Python官方文档，这里按使用时的先后顺序简要介绍常用格式描述符的含义与作用：
+
+对齐相关格式描述符
+
+格式描述符含义与作用
+
+<左对齐（字符串默认对齐方式）
+
+>右对齐（数值默认对齐方式）
+
+^居中
+
+数字符号相关格式描述符
+
+格式描述符含义与作用
+
++负数前加负号（-），正数前加正号（+）
+
+-负数前加负号（-），正数前不加任何符号（默认）
+
+（空格）负数前加负号（-），正数前加一个空格

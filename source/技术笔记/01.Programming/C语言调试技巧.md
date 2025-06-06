@@ -5,16 +5,6 @@
 strace -ewrite -p $PID 2>&1
 ```
 
-## 重定向已启动进程的stdout和stderr
-
-```
-gdb -p $PID
-(gdb) p dup2(open("/dev/null", 0), 1)  # 1表示stdout，具体路径为/proc/$PID/fd/1
-(gdb) p dup2(open("/dev/null", 0), 2)  # 2表示stderr，具体路径为/proc/$PID/fd/2
-(gdb) detach
-(gdb) quit
-```
-
 ## 内存检测
 
 ```
@@ -66,7 +56,17 @@ sudo apt install graphviz ghostscript
 pprof --pdf ./server server.prof > perf.pdf
 ```
 
-## GDB命令
+## GDB
+
+启动gdb
+```
+# 方法1
+gdb --args ./ffmpeg -i input.mp4 output.mp4
+
+# 方法2
+gdb ./ffmpeg
+set args -i input.mp4 output.mp4
+```
 
 | 示例                                    | 功能                                                   |
 | ------------                            | ------------                                           |
@@ -88,6 +88,38 @@ gdb调试时输出下面信息：
 Program received signal SIGTRAP, Trace/breakpoint trap
 ```
 原因是编译时和调试时的动态库版本不匹配，编译时使用了devtoolset-7中的gcc-7.3.1，但调试时LD_LIBRARY_PATH没有添加devtoolset-7动态库路径，gdb仍然使用系统默认的gcc-4.8.5动态库，在LD_LIBRARY_PATH添加devtoolset-7动态库路径即可解决
+
+
+## core文件查看
+
+方法1
+```
+gdb ./ffmpeg
+core-file core.xxx
+bt
+```
+
+方法2
+```
+gdb -c core.xxx
+file ./ffmpeg
+bt
+```
+
+方法3
+```
+gdb ./ffmpeg core.xxx
+bt
+```
+## 重定向已启动进程的stdout和stderr
+
+```
+gdb -p $PID
+(gdb) p dup2(open("/dev/null", 0), 1)  # 1表示stdout，具体路径为/proc/$PID/fd/1
+(gdb) p dup2(open("/dev/null", 0), 2)  # 2表示stderr，具体路径为/proc/$PID/fd/2
+(gdb) detach
+(gdb) quit
+```
 
 
 ## PDB
@@ -121,6 +153,8 @@ Program received signal SIGTRAP, Trace/breakpoint trap
 调试 j lineno 直接跳转到指定行（被跳过的代码不执行）
 
 查看变量值 p expression 打印变量值
+
+查看类对象的所有成员变量值 p obj.__dict__
 
 查看函数参数 a 在函数中时打印函数的参数和参数的值
 

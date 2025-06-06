@@ -180,7 +180,7 @@ ${string/%substring/replacement}
 
 原地编辑
 ```
-# 第1种in-place编辑方法在docker中存在权限问题，推荐使用其他方法
+# 对于低版本sed，第1种in-place编辑方法在docker中存在权限问题，短期可使用其他方法暂时规避，长期可升级sed 4.8及以上版本解决
 sed -i 'xxx' FILE
 sed -ci 'xxx' FILE
 sed 'xxx' FILE > NEWFILE
@@ -530,12 +530,26 @@ make install PREFIX=/usr/local/test
 readelf -S exe\|lib
 ```
 
+## 打印
+
+```
+printf "$INFO"
+```
+
+有风险，若`$INFO`中包含特殊字符`\`或`%`，则会引发转义，若特殊字符后未跟随合法的转义内容，则会转义失败
+
+```
+printf "%s\n" "$INFO"
+```
+
+安全，设置`%s`占位符，将`$INFO`解析为字符串，`printf`内部自动转义
 
 ## 语法
 
 循环
 ```
 for i in {1..100}; do echo $i; done
+for i in `seq 1 2 100`; do echo $i; done    # 等差数列，step为2
 ```
 
 循环，循环起止由变量$m和$n控制
@@ -658,8 +672,23 @@ nethogs -d 5 eth0  # 每5秒种刷新1次
 yum -y install https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
 ```
 
+## 查看系统报错
 
-## 其他常用命令
+```
+dmesg -T
+```
+
+将`dmesg`的输出时间转换为人类可读时间
+```
+timestamp=105435829.344746
+unix_time=`echo "$(date +%s) - $(cat /proc/uptime | cut -f 1 -d' ') + ${timestamp}" | bc`
+stamp=`echo "scale=0; ${unix_time} / 1" | bc`
+echo ${stamp}
+date -d @${stamp} "+%Y-%m-%d %H:SM:%S"
+```
+
+
+## 中文相关
 
 下载文件时中文文件名不转义
 ```
@@ -670,6 +699,18 @@ wget --restrict-file-names=nocontrol $URL
 ```
 LANG="zh_CN.UTF-8"
 ```
+
+列出所有支持中文的字体
+```
+fc-list :lang=zh
+```
+
+安装中文字体
+```
+sudo yum install wqy-zenhei-fonts wqy-microhei-fonts google-noto-cjk-fonts
+```
+
+## 其他常用命令
 
 统计运行时间
 ```
@@ -690,7 +731,7 @@ ls -l | grep "^d" | awk '{print $9}'
 
 列出目录和文件的完整路径
 ```
-find . -type f -print0 | xargs -0 ls -d
+find . -type f -print0 | xargs -0 ls -ld
 find . | tr " " "\?" | xargs ls -ld
 ```
 
