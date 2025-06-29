@@ -272,6 +272,16 @@ sed '3i New line' FILE
 sed '$a New line' FILE
 ```
 
+#### MacOS执行sed报错invalid command code
+
+原因是MacOS自带的sed等命令是基于BSD的，存在一些不足，对于`-i`选项和`\n`的处理不相同。
+
+解决办法为改成`sed -i .bak`或者`sed -i ""`，或者安装gnu-sed:
+
+```
+brew install gnu-sed --with-default-names
+```
+
 ### awk
 
 
@@ -637,6 +647,18 @@ do
   }&
 done
 wait
+```
+
+## 函数
+
+```
+funWithParam(){
+    echo "$1!"
+    echo "$2!"
+    return $1
+}
+
+funWithParam 1 2
 ```
 
 ## 网络
