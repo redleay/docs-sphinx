@@ -73,8 +73,7 @@ parameter）。将 上一步得到的 进一步变换为：
 - GN（Group
   Normalization，[论文](https://arxiv.org/pdf/1803.08494.pdf)）：对(C/groupnum)HW进行归一化，适合CV任务
 
-![descript](./Whitening（白化）/media/image1.png){width="6.299305555555556in"
-height="1.7521248906386702in"}
+![descript](./Whitening/media/image1.png)
 
 ## BN: Batch Normalization（纵向归一化）
 
@@ -114,7 +113,7 @@ mini-batch的原始分布差别很大，那么不同 mini-batch
 
 3.  训练时要将traning参数设置为True，验证和推理时要将trainning参数设置为False。在pytorch中可通过model.train()和model.eval()方法设置
 
-![descript](./Whitening（白化）/media/image2.jpg){width="6.299305555555556in"
+![descript](./Whitening/media/image2.jpg){width="6.299305555555556in"
 height="3.2375240594925634in"}
 
 李宏毅老师关于BN的视频讲解：

@@ -1,6 +1,5 @@
 GPT
 
-
 在Transform被提出之后的几年内，出现了一些变种，比如仅编码器的BERT、仅解码器的GPT和编码器+解码器的T5。而真正大杀四方的是只有openAI的GPT。
 
 ChatGPT基于Transformer提取了解码器部分并做了一些改造，以下是chatGPT2.0及之后版本的**架构**。
