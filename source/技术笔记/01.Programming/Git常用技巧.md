@@ -71,6 +71,16 @@ git checkout REMOTEBRANCH -b LOCALBRANCH
 git cherry-pick COMMIT      # 将一个分支的特定COMMIT合并到当前分支
 ```
 
+cherry-pick重新写入作者信息，也会重新写入时间
+```
+# 方法一
+git cherry-pick -n <commit-hash>                    # 执行 cherry-pick 但不自动提交
+git commit --author="author <email>" -m "message"   # 手动提交并覆盖作者信息
+
+# 方法二
+git cherry-pick <commit-hash>                           # 正常 cherry-pick
+git commit --amend --author="author <email>" --no-edit  # 修改最新提交的作者信息
+```
 
 删除远程分支
 ```
@@ -272,8 +282,8 @@ git config --local --list       # 查看当前仓库配置
 ```
 git config --global user.name USERNAME
 git config --global user.email EMAIL
-git config --local  user.name USERNAME
-git config --local  user.email EMAIL
+git config --local  user.name redleay
+git config --local  user.email luoylin2007@126.com
 ```
 
 清除用户名和邮箱设置

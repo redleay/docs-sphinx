@@ -311,9 +311,9 @@ sort -t \_ -k 2 -n
 sort -t \_ -k2n -k3n -s
 ```
 
-sort -t . -k1,1 -s|  先以"\_"为分隔符，第2列进行数值排序，后以"."为分隔符，第1列进行稳定的排序
+先以"\_"为分隔符，第2列进行数值排序，后以"."为分隔符，第1列进行稳定的排序
 ```
-sort -t \_ -k2n
+sort -t . -k1,1 -s | sort -t \_ -k2n
 ```
 
 排序并删除重复行
@@ -338,24 +338,31 @@ shuf
 
 ## 归档压缩
 
+### tar
+
 创建归档，将bin和lib目录归档到压缩包
 ```
-tar -c[zj]vf archive.tar.gz bin/ lib/
+tar -c[zJ]vf archive.tar.gz bin/ lib/
 ```
 
 解压归档，将压缩包解压到DIR目录
 ```
-tar -x[zj]vf archive.tar.gz -C DIR
+tar -x[zJ]vf archive.tar.gz -C DIR
 ```
 
 查看归档，查看压缩包内文件列表
 ```
-tar -t[zj]vf archive.tar.gz
+tar -t[zJ]vf archive.tar.gz
 ```
 
-创建归档
+创建归档，将`tempdir/1.mp4`归档到压缩包，压缩包中去除`tempdir`前缀目录
 ```
-zip archive.zip -r ffmpeg/ pooltrans-1.0/
+tar -cvf output.tar -C tempdir 1.mp4
+```
+
+创建归档，将`tempdir/*.mp4`归档到压缩包，压缩包中去除`tempdir`前缀目录
+```
+tar -cvf output.tar -C tempdir $(find tempdir -maxdepth 1 -name "*.mp4" -exec basename {} \;)
 ```
 
 创建归档，并分割为每个4000M
@@ -373,6 +380,12 @@ cat Split.tar.\* | tar -xv
 tar -tzvf archive.tar.gz | awk '$1 ~ /^-/{print $NF}'
 ```
 
+### zip
+
+创建归档
+```
+zip archive.zip -r ffmpeg/ pooltrans-1.0/
+```
 
 ## ln链接
 
@@ -455,7 +468,7 @@ tmux attach -t 0 # 使用会话编号
 tmux attach -t <session-name> # 使用会话名称
 ```
 
-
+解绑会话
 ```
 tmux detach
 ```
@@ -521,6 +534,7 @@ Ctrl+b n：切换到下一个窗口。
 Ctrl+b <number>：切换到指定编号的窗口，其中的<number>是状态栏上的窗口编号。
 Ctrl+b w：从列表中选择窗口。
 Ctrl+b ,：窗口重命名。
+Ctrl+b [: 查看历史输出信息，按q退出
 ```
 
 ## 编译
@@ -543,16 +557,26 @@ readelf -S exe\|lib
 ## 打印
 
 ```
+# 有风险，若`$INFO`中包含特殊字符`\`或`%`，则会引发转义，若特殊字符后未跟随合法的转义内容，则会转义失败
 printf "$INFO"
-```
 
-有风险，若`$INFO`中包含特殊字符`\`或`%`，则会引发转义，若特殊字符后未跟随合法的转义内容，则会转义失败
-
-```
+# 安全，设置`%s`占位符，将`$INFO`解析为字符串，`printf`内部自动转义
 printf "%s\n" "$INFO"
 ```
 
-安全，设置`%s`占位符，将`$INFO`解析为字符串，`printf`内部自动转义
+## 查看
+
+```
+xxd -l 500 test.yuv
+od -d   test.yuv    # 1字节10进制显示
+od -x   test.yuv    # 1字节16进制显示
+od -td2 test.yuv    # 2字节10进制显示
+od -tx2 test.yuv    # 2字节16进制显示
+hexdump -b test.yuv # 1字节8进制显示
+hexdump -d test.yuv # 2字节10进制显示
+hexdump -x test.yuv # 2字节16进制显示
+hexdump -C -s 2000 -n 1000 test.mp4 # 从2000 Byte开始，打印1000 Byte，同时以16进制和ASCII打印
+```
 
 ## 语法
 
@@ -686,6 +710,15 @@ iftop -i eth1
 nethogs -d 5 eth0  # 每5秒种刷新1次
 ```
 
+## 查看系统版本
+
+```
+uname -a
+cat /etc/os-release
+cat /etc/redhat-release
+cat /etc/centos-release
+hostnamectl
+```
 
 ## yum软件包管理
 

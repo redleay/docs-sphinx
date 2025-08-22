@@ -25,6 +25,12 @@
 
 [HDR关键技术：HEVC/H.265编码优化 - 云+社区 - 腾讯云](https://cloud.tencent.com/developer/article/1180918)  
 
+## 视频封装
+
+根据[High Dynamic Range Metadata For Apple Devices (Preliminary)](https://developer.apple.com/av-foundation/High-Dynamic-Range-Metadata-for-Apple-Devices.pdf)，
+- HDR10的Mastering Display和Content Light信息优先存放于mdcv/clli/colr中，与hvcC并列，否则则应该存放于hvcC中
+- HDR10的色彩描述信息应该存放于colr中
+
 ## 图像格式
 
 ### RGBE格式

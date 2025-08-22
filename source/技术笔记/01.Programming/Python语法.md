@@ -217,3 +217,6 @@ f-string采用 {content:format} 设置字符串格式，其中 content 是替换
 -负数前加负号（-），正数前不加任何符号（默认）
 
 （空格）负数前加负号（-），正数前加一个空格
+
+获取当前代码行号
+sys._getframe().f_lineno
