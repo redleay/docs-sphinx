@@ -1,182 +1,6 @@
-# LinuxShell语法和使用
+# 流式编辑
 
-## Shell脚本执行选项
-
-读取shell脚本，但不实际执行
-```
-sh -n run.sh
-```
-
-进入跟踪方式，显示所执行的每一条命令
-```
-sh -x run.sh
-```
-
-从string中读取命令
-```
-sh -c "string"
-```
-
-## 环境
-
-设置动态库搜索路径
-```
-export LD_LIBRARY_PATH=/path/to/lib:$LD_LIBRARY_PATH
-```
-
-查看库文件中的string，查看glic版本
-```
-strings /lib64/libc.so.6 \| grep GLIBC
-```
-
-
-## 账号管理
-
-查看账号user的信息
-```
-id user
-```
-
-修改HOME目录：
-```
-usermod -d NEWHOME -u uid USERNAME
-```
-
-将user添加到group中
-```
-sudo usermod -a -G group user
-sudo usermod -a -G group1,group2 user
-```
-
-更改user的primary group
-```
-sudo usermod -g group user
-```
-
-sudo groupadd groupname
-sudo groupdel groupname
-
-## 字符串操作
-
-获取string的长度
-```
-${#string}
-```
-
-在string中, 从位置position开始提取子串
-
-```
-${string:position}
-```
-
-在string中, 从位置position开始提取长度为length的子串
-```
-${string:position:length}
-```
-
-从变量string的开头, 删除最短匹配substring的子串
-```
-${string#substring}
-```
-
-从变量string的开头, 删除最长匹配substring的子串
-```
-${string##substring}
-```
-
-从变量string的结尾, 删除最短匹配substring的子串
-```
-${string%substring}
-```
-
-从变量string的结尾, 删除最长匹配substring的子串
-```
-${string%%substring}
-```
-
-删除变量string结尾的空格
-```
-${string%%[[:space:]]\*}
-```
-
-使用replacement, 来代替第一个匹配的substring
-```
-${string/substring/replacement}
-```
-
-使用replacement, 代替所有匹配的substring
-```
-${string//substring/replacement}
-```
-
-如果string的前缀匹配substring, 那么就用replacement来代替匹配到的substring
-```
-${string/#substring/replacement}
-```
-
-如果string的后缀匹配substring, 那么就用replacement来代替匹配到的substring
-```
-${string/%substring/replacement}
-```
-
-## 字符串判断
-
-| 命令 | 作用 |
-| --- | --- |
-| [ -z STRING ] | 如果STRING的长度为零则为真，即判断是否为空，空即是真 |
-| [ -n STRING ] | 如果STRING的长度非零则为真，即判断是否为非空，非空即是真 |
-| [ STRING ]    | 如果STRING不为空则为真，与-n类似 |
-| [ STRING1 = STRING2 ] | 如果两个字符串相同则为真 |
-| [ STRING1 == STRING2 ] | 如果字符串相同则为真, “=” instead of “==” for strict POSIX compliance |
-| [ STRING1 != STRING2 ] | 如果字符串不相同则为真 |
-| [ STRING1 < STRING2 ] | 如果 “STRING1” sorts before “STRING2”则为真, lexicographically in the current locale |
-| [ STRING1 > STRING2 ] | 如果 “STRING1” sorts after “STRING2”则为真, lexicographically in the current locale |
-
-## 数值判断
-
-| 命令 | 作用 |
-| --- | --- |
-| INT1 -eq INT2 | `=`:  INT1和INT2两数相等为真 |
-| INT1 -ne INT2 | `<>`: INT1和INT2两数不等为真 |
-| INT1 -gt INT2 | `>`:  INT1大于INT1为真 |
-| INT1 -ge INT2 | `>=`: INT1大于等于INT2为真 |
-| INT1 -lt INT2 | `<`:  INT1小于INT2为真 |
-| INT1 -le INT2 | `<=`: INT1小于等于INT2为真 |
-
-
-## 文件/目录判断
-
-| 命令 | 作用 |
-| --- | --- |
-| [ -d DIR  ] | 如果 FILE 存在且是一个目录则为真 |
-| [ -e FILE ] | 如果 FILE 存在则为真 |
-| [ -a FILE ] | 如果 FILE 存在则为真 |
-| [ -s FILE ] | 如果 FILE 存在且大小不为0则为真 |
-| [ -r FILE ] | 如果 FILE 存在且是可读的则为真 |
-| [ -w FILE ] | 如果 FILE 存在且是可写的则为真 |
-| [ -x FILE ] | 如果 FILE 存在且是可执行的则为真 |
-| [ -N FILE ] | 如果 FILE 存在且在上次读取之后被修改了则为真 |
-| [ -b FILE ] | 如果 FILE 存在且是一个块特殊文件则为真 |
-| [ -c FILE ] | 如果 FILE 存在且是一个字特殊文件则为真 |
-| [ -f FILE ] | 如果 FILE 存在且是一个普通文件则为真 |
-| [ -p FILE ] | 如果 FILE 存在且是一个名字管道(FifO)则为真 |
-| [ -L FILE ] | 如果 FILE 存在且是一个符号连接则为真 |
-| [ -S FILE ] | 如果 FILE 存在且是一个套接字则为真 |
-| [ -g FILE ] | 如果 FILE 存在且设置了SGID则为真 |
-| [ -u FILE ] | 如果 FILE 存在且设置了SUID则为真 |
-| [ -k FILE ] | 如果 FILE 存在且设置了粘制位则为真 |
-| [ -O FILE ] | 如果 FILE 存在且属有效用户ID则为真 |
-| [ -G FILE ] | 如果 FILE 存在且属有效用户组则为真 |
-| [ FILE1 -nt FILE2 ] | 如果 FILE1 修改时间比 FILE2 更晚，或者 FILE1 存在且 FILE2 不存在则为真 |
-| [ FILE1 -ot FILE2 ] | 如果 FILE1 修改时间比 FILE2 要早，即 FILE1 更老，或者 FILE2 存在且 FILE1 不存在则为真 |
-| [ FILE1 -ef FILE2 ] | 如果 FILE1 和 FILE2 指向相同的设备和节点号则为真 |
-| [ -t FD ]   | 如果文件描述符 FD 打开且指向一个终端则为真 |
-
-具体可以参考`man test`
-
-## 流式编辑
-
-### sed & ed
+## sed & ed
 
 原地编辑
 ```
@@ -272,7 +96,7 @@ sed '3i New line' FILE
 sed '$a New line' FILE
 ```
 
-#### MacOS执行sed报错invalid command code
+### MacOS执行sed报错invalid command code
 
 原因是MacOS自带的sed等命令是基于BSD的，存在一些不足，对于`-i`选项和`\n`的处理不相同。
 
@@ -282,10 +106,11 @@ sed '$a New line' FILE
 brew install gnu-sed --with-default-names
 ```
 
-### awk
+## awk
 
 
-### 其他
+
+## 其他
 
 按行截取文本
 ```
@@ -294,7 +119,7 @@ tail -n 100 FILE            # 截取后面100行
 sed  -n '100,200p' FILE     # 截取100到200行
 ```
 
-## 排序
+# 排序
 
 以数值来排序
 ```
@@ -328,7 +153,7 @@ shuf
 ```
 
 
-## tr
+# tr
 
 删除字符串中的换行符
 ```
@@ -336,9 +161,9 @@ shuf
 ```
 
 
-## 归档压缩
+# 归档压缩
 
-### tar
+## tar
 
 创建归档，将bin和lib目录归档到压缩包
 ```
@@ -380,14 +205,14 @@ cat Split.tar.\* | tar -xv
 tar -tzvf archive.tar.gz | awk '$1 ~ /^-/{print $NF}'
 ```
 
-### zip
+## zip
 
 创建归档
 ```
 zip archive.zip -r ffmpeg/ pooltrans-1.0/
 ```
 
-## ln链接
+# ln链接
 
 为file创建软链接softlink
 ```
@@ -400,7 +225,7 @@ ln file hardlink
 ```
 
 
-## 进程管理
+# 进程管理
 
 查看进程stdout
 ```
@@ -427,7 +252,7 @@ bg jobnumber
 Ctrl-Z
 ```
 
-## tmux
+# tmux
 
 
 列出所有快捷键，及其对应的tmux命令
@@ -537,7 +362,7 @@ Ctrl+b ,：窗口重命名。
 Ctrl+b [: 查看历史输出信息，按q退出
 ```
 
-## 编译
+# 编译
 
 打印make执行的命令
 ```
@@ -554,7 +379,7 @@ make install PREFIX=/usr/local/test
 readelf -S exe\|lib
 ```
 
-## 打印
+# 打印
 
 ```
 # 有风险，若`$INFO`中包含特殊字符`\`或`%`，则会引发转义，若特殊字符后未跟随合法的转义内容，则会转义失败
@@ -564,7 +389,7 @@ printf "$INFO"
 printf "%s\n" "$INFO"
 ```
 
-## 查看
+# 查看文件
 
 ```
 xxd -l 500 test.yuv
@@ -578,7 +403,382 @@ hexdump -x test.yuv # 2字节16进制显示
 hexdump -C -s 2000 -n 1000 test.mp4 # 从2000 Byte开始，打印1000 Byte，同时以16进制和ASCII打印
 ```
 
-## 语法
+# 账号
+
+查看账号user的信息
+```
+id user
+```
+
+修改HOME目录：
+```
+usermod -d NEWHOME -u uid USERNAME
+```
+
+将user添加到group中
+```
+sudo usermod -a -G group user
+sudo usermod -a -G group1,group2 user
+```
+
+更改user的primary group
+```
+sudo usermod -g group user
+```
+
+sudo groupadd groupname
+sudo groupdel groupname
+
+# 网络
+
+设置Shell代理
+```
+export http_proxy="http://proxy.xxx.com"
+export https_proxy="http://proxy.xxx.com"
+export no_proxy="mirrors.xxx.com
+```
+
+取消Shell代理
+```
+unset http_proxy
+unset https_proxy
+unset no_proxy
+```
+
+实时网速和流量情况
+```
+sudo nload eth0 -m
+sudo nload -m
+vnstat -i eth0 -l  # 查看实时流量
+iftop -i eth1
+nethogs -d 5 eth0  # 每5秒种刷新1次
+```
+
+# 系统管理
+
+```
+uname -a
+cat /etc/os-release
+cat /etc/redhat-release
+cat /etc/centos-release
+hostnamectl
+```
+
+# yum软件管理
+
+```
+yum -y install https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
+```
+
+# 查看系统报错
+
+```
+dmesg -T
+```
+
+将`dmesg`的输出时间转换为人类可读时间
+```
+timestamp=105435829.344746
+unix_time=`echo "$(date +%s) - $(cat /proc/uptime | cut -f 1 -d' ') + ${timestamp}" | bc`
+stamp=`echo "scale=0; ${unix_time} / 1" | bc`
+echo ${stamp}
+date -d @${stamp} "+%Y-%m-%d %H:SM:%S"
+```
+
+# 中文相关
+
+下载文件时中文文件名不转义
+```
+wget --restrict-file-names=nocontrol $URL
+```
+
+设置terminal终端支持中文显示，避免中文乱码
+```
+LANG="zh_CN.UTF-8"
+```
+
+列出所有支持中文的字体
+```
+fc-list :lang=zh
+```
+
+安装中文字体
+```
+# yum安装
+sudo yum install wqy-zenhei-fonts wqy-microhei-fonts google-noto-cjk-fonts
+
+# 手动安装
+sudo cp sudo cp xxx-Regular.ttf /usr/share/fonts/
+cd /usr/share/fonts
+sudo mkfontscale
+sudo fc-cache -fv
+```
+
+# 其他常用命令
+
+统计运行时间
+```
+(time -f "pencent %P real %e cpu %S %U men %M %K" ffmpeg) > log.txt 2>&1
+```
+
+查找文件并计算md5
+```
+find . -type f -print0 | xargs -0 md5sum > checksum.md5
+find . -not -path '*/\.*' -not -name '*.log' -type f -exec md5sum {} + > checksum.md5   # 排除隐藏目录、隐藏文件和.log文件
+```
+
+列出当前目录下的所有目录名
+```
+ls -d */
+ls -l | grep "^d" | awk '{print $9}'
+```
+
+列出目录和文件的完整路径
+```
+find . -type f -print0 | xargs -0 ls -ld
+find . | tr " " "\?" | xargs ls -ld
+```
+
+valgrind检测内存泄漏
+```
+valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all ./x265
+```
+
+
+运行`sudo yum install graphviz ghostscript`报错：
+```
+https://packages.endpointdev.com/rhel/2.2/os/x86_64/repodata/repomd.xml: [Errno 14] HTTPS Error 404 - Not Found
+Trying other mirror.
+To address this issue please refer to the below wiki article 
+
+https://wiki.centos.org/yum-errors
+
+If above article doesn't help to resolve this issue please use https://bugs.centos.org/.
+
+ One of the configured repositories failed (End Point repository),
+ and yum doesn't have enough cached data to continue. At this point the only
+ safe thing yum can do is fail. There are a few ways to work "fix" this:
+
+     1. Contact the upstream for the repository and get them to fix the problem.
+
+     2. Reconfigure the baseurl/etc. for the repository, to point to a working
+        upstream. This is most often useful if you are using a newer
+        distribution release than is supported by the repository (and the
+        packages for the previous distribution release still work).
+
+     3. Run the command with the repository temporarily disabled
+            yum --disablerepo=endpoint ...
+
+     4. Disable the repository permanently, so yum won't use it by default. Yum
+        will then just ignore the repository until you permanently enable it
+        again or use --enablerepo for temporary usage:
+
+            yum-config-manager --disable endpoint
+        or
+            subscription-manager repos --disable=endpoint
+
+     5. Configure the failing repository to be skipped, if it is unavailable.
+        Note that yum will try to contact the repo. when it runs most commands,
+        so will have to try and fail each time (and thus. yum will be be much
+        slower). If it is a very temporary problem though, this is often a nice
+        compromise:
+
+            yum-config-manager --save --setopt=endpoint.skip_if_unavailable=true
+
+failure: repodata/repomd.xml from endpoint: [Errno 256] No more mirrors to try.
+https://packages.endpointdev.com/rhel/2.2/os/x86_64/repodata/repomd.xml: [Errno 14] HTTPS Error 404 - Not Found
+```
+使用以下命令`sudo yum --disablerepo=endpoint install graphviz ghostscript`解决
+
+
+# Shell脚本执行选项
+
+读取shell脚本，但不实际执行
+```
+sh -n run.sh
+```
+
+进入跟踪方式，显示所执行的每一条命令
+```
+sh -x run.sh
+```
+
+从string中读取命令
+```
+sh -c "string"
+```
+
+# 环境
+
+设置动态库搜索路径
+```
+export LD_LIBRARY_PATH=/path/to/lib:$LD_LIBRARY_PATH
+```
+
+查看库文件中的string，查看glic版本
+```
+strings /lib64/libc.so.6 \| grep GLIBC
+```
+
+# 变量
+
+## 基础操作
+
+变量引用
+```
+$var
+${var}
+```
+
+引用变量时带默认值
+```
+${var-default}  # 如果var没有定义，则返回default，否则返回var的值
+${var:-default} # 如果var没有定义或为空，则返回default，否则返回var的值
+```
+
+## 环境变量
+
+```
+export back_dir=/home/backup
+env | grep "backdir"
+```
+
+## 位置变量
+
+```
+$1 $2 ${10}
+```
+
+## 预定义变量
+
+```
+$0 脚本名称 默认输出路径加脚本名，可以使用basename来只输出脚本的名称不包含路径，dirname可以输出脚本所在的文件夹名称
+$* 所有的参数，被作为一个单词，注意 $* 必须被""引用
+$@ 所有的参数，每个参数都是一个独立的""引用字串，这就意味着参数被完整地传递
+$# 参数的个数
+$$ 当前进程的PID
+$! 上一个后台进程的PID
+$? 上一个命令的返回值，0表示成功
+```
+
+# 字符串
+
+获取string的长度
+```
+${#string}
+```
+
+在string中, 从位置position开始提取子串
+```
+${string:position}
+```
+
+在string中, 从位置position开始提取长度为length的子串
+```
+${string:position:length}
+```
+
+从变量string的开头, 删除最短匹配substring的子串
+```
+${string#substring}
+```
+
+从变量string的开头, 删除最长匹配substring的子串
+```
+${string##substring}
+```
+
+从变量string的结尾, 删除最短匹配substring的子串
+```
+${string%substring}
+```
+
+从变量string的结尾, 删除最长匹配substring的子串
+```
+${string%%substring}
+```
+
+删除变量string结尾的空格
+```
+${string%%[[:space:]]\*}
+```
+
+使用replacement, 来代替第一个匹配的substring
+```
+${string/substring/replacement}
+```
+
+使用replacement, 代替所有匹配的substring
+```
+${string//substring/replacement}
+```
+
+如果string的前缀匹配substring, 那么就用replacement来代替匹配到的substring
+```
+${string/#substring/replacement}
+```
+
+如果string的后缀匹配substring, 那么就用replacement来代替匹配到的substring
+```
+${string/%substring/replacement}
+```
+
+# 字符串判断
+
+| 命令 | 作用 |
+| --- | --- |
+| [ -z STRING ] | 如果STRING的长度为零则为真，即判断是否为空，空即是真 |
+| [ -n STRING ] | 如果STRING的长度非零则为真，即判断是否为非空，非空即是真 |
+| [ STRING ]    | 如果STRING不为空则为真，与-n类似 |
+| [ STRING1 = STRING2 ] | 如果两个字符串相同则为真 |
+| [ STRING1 == STRING2 ] | 如果字符串相同则为真, “=” instead of “==” for strict POSIX compliance |
+| [ STRING1 != STRING2 ] | 如果字符串不相同则为真 |
+| [ STRING1 < STRING2 ] | 如果 “STRING1” sorts before “STRING2”则为真, lexicographically in the current locale |
+| [ STRING1 > STRING2 ] | 如果 “STRING1” sorts after “STRING2”则为真, lexicographically in the current locale |
+
+# 数值判断
+
+| 命令 | 作用 |
+| --- | --- |
+| INT1 -eq INT2 | `=`:  INT1和INT2两数相等为真 |
+| INT1 -ne INT2 | `<>`: INT1和INT2两数不等为真 |
+| INT1 -gt INT2 | `>`:  INT1大于INT1为真 |
+| INT1 -ge INT2 | `>=`: INT1大于等于INT2为真 |
+| INT1 -lt INT2 | `<`:  INT1小于INT2为真 |
+| INT1 -le INT2 | `<=`: INT1小于等于INT2为真 |
+
+
+# 文件/目录判断
+
+| 命令 | 作用 |
+| --- | --- |
+| [ -d DIR  ] | 如果 FILE 存在且是一个目录则为真 |
+| [ -e FILE ] | 如果 FILE 存在则为真 |
+| [ -a FILE ] | 如果 FILE 存在则为真 |
+| [ -s FILE ] | 如果 FILE 存在且大小不为0则为真 |
+| [ -r FILE ] | 如果 FILE 存在且是可读的则为真 |
+| [ -w FILE ] | 如果 FILE 存在且是可写的则为真 |
+| [ -x FILE ] | 如果 FILE 存在且是可执行的则为真 |
+| [ -N FILE ] | 如果 FILE 存在且在上次读取之后被修改了则为真 |
+| [ -b FILE ] | 如果 FILE 存在且是一个块特殊文件则为真 |
+| [ -c FILE ] | 如果 FILE 存在且是一个字特殊文件则为真 |
+| [ -f FILE ] | 如果 FILE 存在且是一个普通文件则为真 |
+| [ -p FILE ] | 如果 FILE 存在且是一个名字管道(FifO)则为真 |
+| [ -L FILE ] | 如果 FILE 存在且是一个符号连接则为真 |
+| [ -S FILE ] | 如果 FILE 存在且是一个套接字则为真 |
+| [ -g FILE ] | 如果 FILE 存在且设置了SGID则为真 |
+| [ -u FILE ] | 如果 FILE 存在且设置了SUID则为真 |
+| [ -k FILE ] | 如果 FILE 存在且设置了粘制位则为真 |
+| [ -O FILE ] | 如果 FILE 存在且属有效用户ID则为真 |
+| [ -G FILE ] | 如果 FILE 存在且属有效用户组则为真 |
+| [ FILE1 -nt FILE2 ] | 如果 FILE1 修改时间比 FILE2 更晚，或者 FILE1 存在且 FILE2 不存在则为真 |
+| [ FILE1 -ot FILE2 ] | 如果 FILE1 修改时间比 FILE2 要早，即 FILE1 更老，或者 FILE2 存在且 FILE1 不存在则为真 |
+| [ FILE1 -ef FILE2 ] | 如果 FILE1 和 FILE2 指向相同的设备和节点号则为真 |
+| [ -t FD ]   | 如果文件描述符 FD 打开且指向一个终端则为真 |
+
+具体可以参考`man test`
+
+# 语法
 
 循环
 ```
@@ -673,7 +873,7 @@ done
 wait
 ```
 
-## 函数
+# 函数
 
 ```
 funWithParam(){
@@ -685,170 +885,5 @@ funWithParam(){
 funWithParam 1 2
 ```
 
-## 网络
-
-设置Shell代理
-```
-export http_proxy="http://proxy.xxx.com"
-export https_proxy="http://proxy.xxx.com"
-export no_proxy="mirrors.xxx.com
-```
-
-取消Shell代理
-```
-unset http_proxy
-unset https_proxy
-unset no_proxy
-```
-
-实时网速和流量情况
-```
-sudo nload eth0 -m
-sudo nload -m
-vnstat -i eth0 -l  # 查看实时流量
-iftop -i eth1
-nethogs -d 5 eth0  # 每5秒种刷新1次
-```
-
-## 查看系统版本
-
-```
-uname -a
-cat /etc/os-release
-cat /etc/redhat-release
-cat /etc/centos-release
-hostnamectl
-```
-
-## yum软件包管理
-
-
-```
-yum -y install https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
-```
-
-## 查看系统报错
-
-```
-dmesg -T
-```
-
-将`dmesg`的输出时间转换为人类可读时间
-```
-timestamp=105435829.344746
-unix_time=`echo "$(date +%s) - $(cat /proc/uptime | cut -f 1 -d' ') + ${timestamp}" | bc`
-stamp=`echo "scale=0; ${unix_time} / 1" | bc`
-echo ${stamp}
-date -d @${stamp} "+%Y-%m-%d %H:SM:%S"
-```
-
-
-## 中文相关
-
-下载文件时中文文件名不转义
-```
-wget --restrict-file-names=nocontrol $URL
-```
-
-设置terminal终端支持中文显示，避免中文乱码
-```
-LANG="zh_CN.UTF-8"
-```
-
-列出所有支持中文的字体
-```
-fc-list :lang=zh
-```
-
-安装中文字体
-```
-sudo yum install wqy-zenhei-fonts wqy-microhei-fonts google-noto-cjk-fonts
-```
-
-## 其他常用命令
-
-统计运行时间
-```
-(time -f "pencent %P real %e cpu %S %U men %M %K" ffmpeg) > log.txt 2>&1
-```
-
-查找文件并计算md5
-```
-find . -type f -print0 | xargs -0 md5sum > checksum.md5
-find . -not -path '*/\.*' -not -name '*.log' -type f -exec md5sum {} + > checksum.md5   # 排除隐藏目录、隐藏文件和.log文件
-```
-
-列出当前目录下的所有目录名
-```
-ls -d */
-ls -l | grep "^d" | awk '{print $9}'
-```
-
-列出目录和文件的完整路径
-```
-find . -type f -print0 | xargs -0 ls -ld
-find . | tr " " "\?" | xargs ls -ld
-```
-
-valgrind检测内存泄漏
-```
-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all ./x265
-```
-
-
-运行`sudo yum install graphviz ghostscript`报错：
-```
-Loaded plugins: fastestmirror
-Loading mirror speeds from cached hostfile
- * base: mirrors-tlinux.tencentyun.com
- * epel: mirrors.tencentyun.com
- * extras: mirrors-tlinux.tencentyun.com
- * tlinux: mirrors-tlinux.tencentyun.com
- * updates: mirrors-tlinux.tencentyun.com
-base                                                                                                        | 3.6 kB  00:00:00     
-centos-sclo-rh                                                                                              | 3.0 kB  00:00:00     
-centos-sclo-sclo                                                                                            | 3.0 kB  00:00:00     
-https://packages.endpointdev.com/rhel/2.2/os/x86_64/repodata/repomd.xml: [Errno 14] HTTPS Error 404 - Not Found
-Trying other mirror.
-To address this issue please refer to the below wiki article 
-
-https://wiki.centos.org/yum-errors
-
-If above article doesn't help to resolve this issue please use https://bugs.centos.org/.
-
- One of the configured repositories failed (End Point repository),
- and yum doesn't have enough cached data to continue. At this point the only
- safe thing yum can do is fail. There are a few ways to work "fix" this:
-
-     1. Contact the upstream for the repository and get them to fix the problem.
-
-     2. Reconfigure the baseurl/etc. for the repository, to point to a working
-        upstream. This is most often useful if you are using a newer
-        distribution release than is supported by the repository (and the
-        packages for the previous distribution release still work).
-
-     3. Run the command with the repository temporarily disabled
-            yum --disablerepo=endpoint ...
-
-     4. Disable the repository permanently, so yum won't use it by default. Yum
-        will then just ignore the repository until you permanently enable it
-        again or use --enablerepo for temporary usage:
-
-            yum-config-manager --disable endpoint
-        or
-            subscription-manager repos --disable=endpoint
-
-     5. Configure the failing repository to be skipped, if it is unavailable.
-        Note that yum will try to contact the repo. when it runs most commands,
-        so will have to try and fail each time (and thus. yum will be be much
-        slower). If it is a very temporary problem though, this is often a nice
-        compromise:
-
-            yum-config-manager --save --setopt=endpoint.skip_if_unavailable=true
-
-failure: repodata/repomd.xml from endpoint: [Errno 256] No more mirrors to try.
-https://packages.endpointdev.com/rhel/2.2/os/x86_64/repodata/repomd.xml: [Errno 14] HTTPS Error 404 - Not Found
-```
-使用以下命令`sudo yum --disablerepo=endpoint install graphviz ghostscript`解决
-
-
+## 位置变量
+··

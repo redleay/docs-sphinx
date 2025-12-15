@@ -2,6 +2,13 @@
 
 ## 综述
 
+[HDR and WCG Principles-Part 1](https://www.slideshare.net/slideshow/hdr-and-wcg-principlespart-1-249369776/249369776)
+[HDR and WCG Principles-Part 2](https://www.slideshare.net/slideshow/hdr-and-wcg-principlespart-2/249369782)
+[HDR and WCG Principles-Part 3](https://www.slideshare.net/slideshow/hdr-and-wcg-principlespart-3/249369785)
+[HDR and WCG Principles-Part 4](https://www.slideshare.net/slideshow/hdr-and-wcg-principlespart-4/249369787)
+[HDR and WCG Principles-Part 5](https://www.slideshare.net/slideshow/hdr-and-wcg-principlespart-5/249369801)
+[HDR and WCG Principles-Part 6](https://www.slideshare.net/slideshow/hdr-and-wcg-principlespart-6/249369789)
+
 [HDR技术浅析 - 知乎](https://zhuanlan.zhihu.com/p/31768560)  
 [浅谈HDR视频技术 - 知乎](https://zhuanlan.zhihu.com/p/42340278)  
 [一文解读HDR原理及不同的标准 - 知乎](https://zhuanlan.zhihu.com/p/35406753)  
@@ -20,6 +27,8 @@
 [gammacorrection](http://www.13thmonkey.org/~boris/gammacorrection/)  
 下文讨论了Apple系统的QuickTime Gamma Shift问题的由来和可能的应对办法：
 [Why are videos washed out on the Mac?](https://blog.dominey.photography/2021/01/24/why-are-videos-washed-out-on-the-mac-exploring-quicktime-gamma-shift/)
+
+npl: nominal peak luminance
 
 ## 编码
 

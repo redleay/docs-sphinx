@@ -214,6 +214,8 @@ static int decode_nal_unit(HEVCContext *s, const H2645NAL *nal)
 
 ### 获取解码帧
 
+首先，HEVC创建和分配解码后的输出帧的函数调用栈为`hevc_frame_start > ff_hevc_set_new_ref > alloc_frame`。
+
 ffmpeg获取解码后的视频帧AVFrame的调用栈与发送待解码码流数据AVPacket的调用栈基本相同：
 
 ```

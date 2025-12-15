@@ -1,13 +1,19 @@
 # Vim常用技巧
 
+## 打开文件
+
+```
+vim -O2 file1 file2     # 在左右排列的两个窗口中同时打开 file1 和 file2
+```
+
 ## 常用快捷键
 
 | 快捷键   | 作用 |
 | ----     | ---- |
 | CTRL+]   | 跳转tag |
 | CTRL+w+] | 新窗口跳转tag |
-| CTRL+t   | 返回tag |
-| CTRL+o   | 返回 |
+| CTRL+t   | 返回，根据tag list |
+| CTRL+o   | 返回，根据jump list |
 
 ## 模式匹配
 
@@ -176,11 +182,26 @@ s/\<[abcd][12]\>/\U&/   " 将a1/b1/c1/d1/a2等转换为A1/B1/C1/D1/A2等大写�
 
 ## 文本对比
 
-启动对比命令
+命令行启动对比
 ```
-vimdiff LEFT RIGHT
+vimdiff LEFT RIGHT    # 等同于 vim -d LEFT RIGHT
 vimdiff -d LEFT RIGHT # 左右竖屏
 vimdiff -o LEFT RIGHT # 上下横屏
+```
+
+Vim内部一条命令启动
+```
+:diffsplit RIGHT
+:vertical diffsplit RIGHT
+```
+
+Vim内部多条命令启动，适合于多个文件相互对比
+```
+:e FILE1
+:diffthis
+:vs FILE2   or  :s FILE2
+:diffthis
+:diffoff    # 对两个窗口分别操作
 ```
 
 对比操作

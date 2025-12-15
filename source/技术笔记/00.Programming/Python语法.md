@@ -60,12 +60,9 @@ numpy.array转List: `listA = numpyarrayA.tolist()`
 
 内置索引和赋值: `rgb[rgb < 0] = 0`
 
-条件选择和处理：`a = np.where((b > 0) & (b < 3), 1, 7)`
-
-条件选择和处理：`a = np.select([(b > 0) & (b < 3), (b > 6) & (b < 8)], [1, 7])`
-
 计算分位点：`numpy.percentile(list, pencenttile)`
 四舍五入：`numpy.around(list)`
+四舍五入：`numpy.round()`
 
 numpy.bincount(x, /, weights=None, minlength=0)
 numpy.histogram(a, bins=10, range=None, density=None, weights=None)
@@ -83,6 +80,9 @@ mask = np.ones((1, 1, 3), dtype=np.uint16)
 mask = np.zeros((1, 1, 3), dtype=np.uint16)
 ```
 
+numpy.searchsorted: 在有序数组中二分查找使得新数据插入后保持有序的插入点索引
+
+
 [教程](https://www.runoob.com/numpy/numpy-tutorial.html)
 
 ## 数学统计
@@ -95,40 +95,6 @@ np.median()：中位数
 np.amin()：计算数组中的元素沿指定轴的最小值
 np.amax()：计算数组中的元素沿指定轴的最大值
 np.ptp()：计算数组中元素最大值与最小值的差
-```
-
-## 图像处理
-
-读入和写出图像
-```
-img = cv2.imread(input, cv2.IMREAD_UNCHANGED)  # [H, W, C]
-cv2.imwrite(output, img)
-```
-
-色彩空间转换：RGB/GBR通道转换
-```
-rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
-bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
-```
-
-分离和合并通道
-```
-b,g,r = cv.split(img)
-img = cv.merge([b,g,r])
-```
-
-```
-gblur = torchvision.transforms.GaussianBlur(31, 10)
-gblur(uv_index.permute(2, 0, 1)).permute(1, 2, 0)
-
-img = cv2.blur(img, (15, 15))
-img = cv2.boxFilter(img, -1, (15, 15))
-img = cv2.medianBlur(img, 9)
-img = cv2.bilateralFilter(img, 0, 150, 20)
-img = cv2.ximgproc.guidedFilter(img, img, 29, 5000, -1)
-
-torch.stack((u, v), dim=2)
-torch.nn.functional.grid_sample(model, uv_index, align_corners=True)
 ```
 
 ## 日志检查
@@ -154,6 +120,8 @@ bins,ticks = get_ticks(bitrate_list, 100)
 bars, _, _ = plt.hist(bitrate_list, bins, align='mid', rwidth=0.9)
 y_max = bars.max()
 plt.vlines(bitrate_list.mean(), 0, y_max, label="Average", colors="r", linestyles="dashed")
+plt.xlim((0, 1))
+plt.ylim((0, 1))
 plt.xticks(ticks, rotation=-45)
 plt.yticks(np.arange(0, y_max+1))
 plt.title ("Bitrate Distribution")
@@ -189,13 +157,61 @@ fnmatch.filter(names, pat)
 os.listdir(path)
 
 
-list原地排序
-filelist.sort()
+lambda匿名函数
+```
+# 语法格式
+lambda arguments: expression
+# 示例
+multiply = lambda a, b : a * b
+```
+
+排序
+```
+newlist = sorted(oldlist)                   # 默认升序
+mylist.sort()                               # 默认升序，原地排序
+mylist.sort(reverse=True)                   # 默认升序，原地排序
+mylist.sort(key = lambda x:x[1])            # 以x[1]为key进行排序
+mylist.sort(key = lambda x:(x[1],x[0]))     # 多个变量排序，先以x[1]排序，再以x[0]排序
+mylist.sort(key = lambda x:(x[1],-x[0]))    # 多个变量单独降序，先以x[1]排序，再以x[0]降序排序
+```
+
+## OpenCV
+
+读入和写出图像
+```
+img = cv2.imread(input, cv2.IMREAD_UNCHANGED)  # [H, W, C]
+cv2.imwrite(output, img)
+```
+
+色彩空间转换：RGB/GBR通道转换
+```
+rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+```
+
+分离和合并通道
+```
+b,g,r = cv.split(img)
+img = cv.merge([b,g,r])
+```
+
+```
+gblur = torchvision.transforms.GaussianBlur(31, 10)
+gblur(uv_index.permute(2, 0, 1)).permute(1, 2, 0)
+
+img = cv2.blur(img, (15, 15))
+img = cv2.boxFilter(img, -1, (15, 15))
+img = cv2.medianBlur(img, 9)
+img = cv2.bilateralFilter(img, 0, 150, 20)
+img = cv2.ximgproc.guidedFilter(img, img, 29, 5000, -1)
+```
 
 
+## 格式化
 
+### f-string
 
-f-string采用 {content:format} 设置字符串格式，其中 content 是替换并填入字符串的内容，可以是变量、表达式或函数等，format 是格式描述符。采用默认格式时不必指定 {:format}，如上面例子所示只写 {content} 即可。
+采用 {content:format} 设置字符串格式，其中 content 是替换并填入字符串的内容，可以是变量、表达式或函数等，format 是格式描述符。采用默认格式时不必指定 {:format}，如上面例子所示只写 {content} 即可。
 关于格式描述符的详细语法及含义可查阅Python官方文档，这里按使用时的先后顺序简要介绍常用格式描述符的含义与作用：
 
 对齐相关格式描述符
@@ -220,3 +236,12 @@ f-string采用 {content:format} 设置字符串格式，其中 content 是替换
 
 获取当前代码行号
 sys._getframe().f_lineno
+
+## 分段函数
+
+```
+np.where(x < 5, 0, 1)   # 小于5的元素变为0，大于等于5的元素变为1
+np.where((b > 0) & (b < 3), 1, 7)
+np.select([(b > 0) & (b < 3), (b > 6) & (b < 8)], [1, 7])
+np.piecewise(x, [x < 4,x > 71], [lambda x:x*2, lambda x:x*3])
+```
