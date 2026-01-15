@@ -282,8 +282,8 @@ git config --local --list       # 查看当前仓库配置
 ```
 git config --global user.name USERNAME
 git config --global user.email EMAIL
-git config --local  user.name redleay
-git config --local  user.email luoylin2007@126.com
+git config --local  user.name USERNAME
+git config --local  user.email EMAIL
 ```
 
 清除用户名和邮箱设置
@@ -359,11 +359,11 @@ git remote rm origin
 
 统计特定开发者的commit数量
 ```
-git log --author="vincenluo" --oneline | wc -l
+git log --author="name" --oneline | wc -l
 ```
 统计特定开发者在某段时间内的提交代码数量
 ```
-git log --author="vincenluo" --since=2022-12-01 --until=2023-12-04 --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc }' -
+git log --author="name" --since=2022-12-01 --until=2023-12-04 --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc }' -
 ```
 
 ## 密钥配置

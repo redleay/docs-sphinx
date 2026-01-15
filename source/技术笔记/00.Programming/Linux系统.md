@@ -410,6 +410,12 @@ hexdump -C -s 2000 -n 1000 test.mp4 # 从2000 Byte开始，打印1000 Byte，同
 id user
 ```
 
+修改账号user和group的id
+```
+usermod -u id user
+groupmod -g id group
+```
+
 修改HOME目录：
 ```
 usermod -d NEWHOME -u uid USERNAME

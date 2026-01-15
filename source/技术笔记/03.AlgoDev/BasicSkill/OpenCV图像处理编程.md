@@ -1,3 +1,37 @@
+# 基础操作
+
+读入和写出图像
+```
+img = cv2.imread(input, cv2.IMREAD_UNCHANGED)  # [H, W, C]
+cv2.imwrite(output, img)
+```
+
+色彩空间转换：RGB/GBR通道转换
+```
+rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+```
+
+分离和合并通道
+```
+b,g,r = cv.split(img)
+img = cv.merge([b,g,r])
+```
+
+# 滤波
+
+```
+gblur = torchvision.transforms.GaussianBlur(31, 10)
+gblur(uv_index.permute(2, 0, 1)).permute(1, 2, 0)
+
+img = cv2.blur(img, (15, 15))
+img = cv2.boxFilter(img, -1, (15, 15))
+img = cv2.medianBlur(img, 9)
+img = cv2.bilateralFilter(img, 0, 150, 20)
+img = cv2.ximgproc.guidedFilter(img, img, 29, 5000, -1)
+```
+
+
 
 # cv2.resize()
 

@@ -84,6 +84,29 @@ EXR标准中支持写入色域坐标信息，如果未写入，则默认为BT.70
 [一文掌握达芬奇最重要的节点：串行、并行和外部节点](http://www.cnrft.com/news/show/1466/)
 [达芬奇的并行节点/串行节点/层节点的用途和三者的区别](https://www.newvfx.com/forums/topic/30515)
 
+## Apple HDR
+
+涉及多个概念：EDR、XDR、Headroom、参考模式。
+
+EDR（Extended Dynamic Range）是苹果推出的一套渲染管线技术，以支持在不同的屏幕上同时正确显示 SDR 和 HDR 内容。当显示 HDR 的内容时，EDR 并不会直接将 HDR 区域变得更亮，而是识别到 HDR 内容后提高整体屏幕亮度的同时，降低非 HDR 区域的白点值，使得其看起来没有那么亮。
+
+[WWDC2022音视频相关Session概览（EDR相关）](https://zhuanlan.zhihu.com/p/545837905)介绍了Apple EDR相关的技术情况。
+
+[三十分钟色彩科学——Apple EDR + Metal](https://mp.weixin.qq.com/s/EgJkGimBs5AF1n3O4KqYog)
+
+[Explore HDR rendering with EDR](https://developer.apple.com/videos/play/wwdc2021/10161/)
+和
+[Explore EDR on iOS](https://developer.apple.com/videos/play/wwdc2022/10113/)是Apple官方的介绍和开发指南文档
+
+Apple XDR（Extreme Dynamic Range，极致动态范围）技术是苹果推出的一种显示技术，旨在提供远超标准动态范围（SDR）和普通高动态范围（HDR）的亮度、对比度和色彩表现，通过在 Pro Display XDR 显示器和 iPhone/iPad (Super Retina XDR)等设备上实现，为专业用户提供逼真的视觉体验。通俗来说，就是通过提高显示屏的亮度支持、加大显示器的宽色彩支持从而将显示屏的色彩精度和使用体验提升至最高程度。
+
+在XDR技术下利用有机二极管的发光特性，能更精准调节画面亮度，把握明暗交替、光影下的各种色差等影响画质的因素。它不是像传统的LCD、LED显示屏那样，使用背光来调节亮度，造成画面亮度的串联导致失真。这种自发光二极管也能精准的调节每个像素的色彩差。能够更真实、精准的还原色彩，自然过渡色彩的明暗交带，让显示屏还原出裸眼直视的效果。
+
+[欢迎来到HDR照片时代：增益图HDR与HDR工作流](https://sspai.com/post/94425)介绍了HDR照片的发展历史和Apple对HDR照片的技术方案发展。
+
+Adaptive HDR是Apple的标准化HDR照片方案，参考
+[用HDR图片点亮你的App](https://blog.wyan.vip/2024/10/WWDC_image_hdr.html)，该文介绍了Apple新推出的Adaptive HDR方案，以及Headroom的概念。
+
 ## 其他
 
 [View of Labels](https://registry.smpte-ra.org/view/published/labels_view.html)  

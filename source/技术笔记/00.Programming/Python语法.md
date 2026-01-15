@@ -1,8 +1,12 @@
 # Python语法
 
 
-替换：数字替换为星号*
+字符串替换
+```
+str.replace(old, new)
+```
 
+正则替换：数字替换为星号*
 ```
 new = re.sub("[0-9]", "*", s)
 ```
@@ -175,37 +179,13 @@ mylist.sort(key = lambda x:(x[1],x[0]))     # 多个变量排序，先以x[1]排
 mylist.sort(key = lambda x:(x[1],-x[0]))    # 多个变量单独降序，先以x[1]排序，再以x[0]降序排序
 ```
 
-## OpenCV
-
-读入和写出图像
-```
-img = cv2.imread(input, cv2.IMREAD_UNCHANGED)  # [H, W, C]
-cv2.imwrite(output, img)
-```
-
-色彩空间转换：RGB/GBR通道转换
-```
-rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
-bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
-```
-
-分离和合并通道
-```
-b,g,r = cv.split(img)
-img = cv.merge([b,g,r])
-```
+## 打印
 
 ```
-gblur = torchvision.transforms.GaussianBlur(31, 10)
-gblur(uv_index.permute(2, 0, 1)).permute(1, 2, 0)
-
-img = cv2.blur(img, (15, 15))
-img = cv2.boxFilter(img, -1, (15, 15))
-img = cv2.medianBlur(img, 9)
-img = cv2.bilateralFilter(img, 0, 150, 20)
-img = cv2.ximgproc.guidedFilter(img, img, 29, 5000, -1)
+with open(log_path, "w") as f:
+    print("%s" % (str))
+    print("%s" % (str), file=f) # 打印到文件
 ```
-
 
 ## 格式化
 
@@ -243,5 +223,7 @@ sys._getframe().f_lineno
 np.where(x < 5, 0, 1)   # 小于5的元素变为0，大于等于5的元素变为1
 np.where((b > 0) & (b < 3), 1, 7)
 np.select([(b > 0) & (b < 3), (b > 6) & (b < 8)], [1, 7])
+
+# 注意，第2个参数condlist中的cond需要同时约束x的两端范围，如x < 5之类的条件可能导致结果不正确
 np.piecewise(x, [x < 4,x > 71], [lambda x:x*2, lambda x:x*3])
 ```
