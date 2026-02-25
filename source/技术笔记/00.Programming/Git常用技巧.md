@@ -379,7 +379,23 @@ ssh-keygen -t rsa -C "EMAIL"
 ```
 ssh-agent bash
 ssh-add ~/.ssh/XXX_id_rsa
+
+# 查看已加载的密钥
+ssh-add -l
 ```
+
+验证ssh连接
+```
+ssh -T git@github.com
+```
+
+#### FAQ
+
+Q: git通过ssh连接报错`Bad configuration option: addkeystoagent`  
+A: 需要升级openssh-clents到7.2版本以上，可使用`ssh -V`查看版本号，使用`yum install openssh-clients`升级ssh
+
+Q: git通过ssh无法连接  
+A: 检测密钥路径、密钥是否已添加到agent、ssh端口号是否正确、端口是否被屏蔽
 
 ### https访问
 
