@@ -1,5 +1,59 @@
 [toc]
 
+# 基本环境配置
+
+查看pytorch使用的CUDA Runtime API版本
+```
+import torch
+torch.version.cuda
+```
+
+## 设置GPU可见性
+
+本设置可用于指定使用哪个GPU
+
+shell设置
+```
+export CUDA_VISIBLE_DEVICES=0,1                 # 使用0号和1号GPU
+CUDA_VISIBLE_DEVICES=0,1 python train.py        # 使用0号和1号GPU
+CUDA_VISIBLE_DEVICES="" python your_script.py   # 屏蔽所有GPU
+```
+
+python内部设置
+```
+os.environ['CUDA_VISIBLE_DEVICES'] = '1,2,3,4'
+```
+
+## 设置CUDA同步模式
+
+设置CUDA同步执行，方便统计执行耗时：
+
+```
+# python
+torch.cuda.synchronize()
+start_time = time.time()
+outputs = civilnet(img)
+torch.cuda.synchronize()
+print('gemfield model_time: ',time.time()-start_time)
+
+# C++
+#include <chrono>
+#include <c10/cuda/CUDAStream.h>
+#include <ATen/cuda/CUDAContext.h>
+start = std::chrono::system_clock::now();
+output = civilnet->forward(inputs).toTensor();
+at::cuda::CUDAStream stream = at::cuda::getCurrentCUDAStream();
+AT_CUDA_CHECK(cudaStreamSynchronize(stream));
+forward_duration = std::chrono::system_clock::now() - start;
+msg = gemfield_org::format(" time: %f",  forward_duration.count() );
+std::cout<<"civilnet->forward(inputs).toTensor() "<<msg<<std::endl;
+```
+
+可以设置以下环境变量来近似设置CUDA同步执行模式：
+```
+export CUDA_LAUNCH_BLOCKING=1
+```
+
 # torch训练技巧
 
 ## 常规tips
@@ -42,7 +96,6 @@ model.load_state_dict(torch.load("model.pth"))
 ```
 
 ## 模型导出
-
 
 将python代码转换为TorchScript的方法有
 1. torch.jit.trace：将一个特定的输入（通常是一个张量）传递给一个PyTorch模型，torch.jit.trace会跟踪此input在model中的计算过程，然后将其转换为Torch脚本。这个方法适用于那些在静态图中可以完全定义的模型，例如具有固定输入大小的神经网络。通常用于转换预训练模型
@@ -95,22 +148,6 @@ jit不支持DataParallel
 且将模型参数的key的module.前缀删除，可参考
 [这篇文章](https://szukevin.site/2021/02/27/MODNet%E8%BD%AC%E6%88%90torchscript%E5%BD%A2%E5%BC%8F%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/)
 
-# GPU可见性设置
-
-本设置可用于指定使用哪个GPU
-
-shell设置
-```
-export CUDA_VISIBLE_DEVICES=0,1                 # 使用0号和1号GPU
-CUDA_VISIBLE_DEVICES=0,1 python train.py        # 使用0号和1号GPU
-CUDA_VISIBLE_DEVICES="" python your_script.py   # 屏蔽所有GPU
-```
-
-python内部设置
-```
-os.environ['CUDA_VISIBLE_DEVICES'] = '1,2,3,4'
-```
-
 # 分布式训练
 
 [新手手册：Pytorch分布式训练](https://mp.weixin.qq.com/s/G-uLl3HXzFJOW03nA7etig)  
@@ -120,37 +157,6 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '1,2,3,4'
 ## 数据并行
 
 ## 模型并行
-
-# CUDA同步模式
-
-设置CUDA同步执行，方便统计执行耗时：
-
-```
-# python
-torch.cuda.synchronize()
-start_time = time.time()
-outputs = civilnet(img)
-torch.cuda.synchronize()
-print('gemfield model_time: ',time.time()-start_time)
-
-# C++
-#include <chrono>
-#include <c10/cuda/CUDAStream.h>
-#include <ATen/cuda/CUDAContext.h>
-start = std::chrono::system_clock::now();
-output = civilnet->forward(inputs).toTensor();
-at::cuda::CUDAStream stream = at::cuda::getCurrentCUDAStream();
-AT_CUDA_CHECK(cudaStreamSynchronize(stream));
-forward_duration = std::chrono::system_clock::now() - start;
-msg = gemfield_org::format(" time: %f",  forward_duration.count() );
-std::cout<<"civilnet->forward(inputs).toTensor() "<<msg<<std::endl;
-```
-
-可以设置以下环境变量来近似设置CUDA同步执行模式：
-
-```
-export CUDA_LAUNCH_BLOCKING=1
-```
 
 # 常用函数
 
