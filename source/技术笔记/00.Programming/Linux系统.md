@@ -1,3 +1,5 @@
+[toc]
+
 # 流式编辑
 
 ## sed & ed
@@ -96,15 +98,11 @@ sed '3i New line' FILE
 sed '$a New line' FILE
 ```
 
-### MacOS执行sed报错invalid command code
+### FAQ
 
-原因是MacOS自带的sed等命令是基于BSD的，存在一些不足，对于`-i`选项和`\n`的处理不相同。
-
-解决办法为改成`sed -i .bak`或者`sed -i ""`，或者安装gnu-sed:
-
-```
-brew install gnu-sed --with-default-names
-```
+Q: MacOS执行sed报错`invalid command code`  
+A: 原因是MacOS自带的sed等命令是基于BSD的，存在一些不足，对于`-i`选项和`\n`的处理不相同。
+解决办法为改成`sed -i .bak`或者`sed -i ""`，或者安装gnu-sed，方法为`brew install gnu-sed --with-default-names`
 
 ## awk
 
@@ -521,6 +519,16 @@ cat /etc/os-release
 cat /etc/redhat-release
 cat /etc/centos-release
 hostnamectl
+```
+
+# 硬件管理
+
+GPU硬件状态查询
+
+```
+nvidia-smi
+nvidia-smi dmon
+nvidia-topo -m
 ```
 
 # yum软件管理
