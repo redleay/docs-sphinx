@@ -362,6 +362,59 @@ Ctrl+b ,：窗口重命名。
 Ctrl+b [: 查看历史输出信息，按q退出
 ```
 
+# docker
+
+docker生命周期管理
+```
+docker run      : 从镜像创建并启动一个新容器(create + start)
+docker create   : 仅创建容器，但不启动
+docker start    : 启动容器
+docker pause    : 暂停容器内所有进程
+docker unpause  : 恢复被暂停的容器
+docker stop     : 停止容器
+docker kill     : 强制停止容器
+docker restart  : 重启容器(stop + start)
+docker rm       : 删除已停止的容器(容器本身)
+docker stats    : 显示容器使用的系统资源
+docker logs     : 容器内日志监控
+```
+
+## 进入容器
+
+方法一：进入正在执行的终端
+```
+docker attach CONTAINER_ID
+exit        # 命令行退出，容器会停止运行
+Ctrl+P+Q    # 快捷键退出，容器不会停止运行
+```
+
+方法二：开启新终端
+```
+docker exec -it CONTAINER_ID /bin/bash
+exit        # 命令行退出，容器不会停止运行
+```
+
+## 复制
+
+```
+docker cp container_name:/path/in/container /path/in/host
+docker cp /path/in/host container_name:/path/in/container
+```
+
+## 构建
+
+## 推送
+
+注意，如果使用root用户来推送可能被拒绝，需要将普通用户添加到docker群组中，以普通用户的身份推送。
+
+## 保存与加载
+
+```
+docker save -o image.tar <image_name>:<tag>
+docker load -i image.tar
+```
+
+
 # 编译
 
 打印make执行的命令
@@ -614,7 +667,7 @@ sh -x run.sh
 sh -c "string"
 ```
 
-# 环境
+# 系统变量
 
 设置动态库搜索路径
 ```
@@ -890,6 +943,3 @@ funWithParam(){
 
 funWithParam 1 2
 ```
-
-## 位置变量
-··
